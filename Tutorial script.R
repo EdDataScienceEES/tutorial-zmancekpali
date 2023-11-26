@@ -1,6 +1,6 @@
 ##%#########################################################################%##
 #                                                                             #
-#                             Data science Tutorial?                          #
+#                            Data science Tutorial                            #
 #                               Zoja Manček Páli                              #
 #                                                                             #
 ##%#########################################################################%##
@@ -8,20 +8,26 @@
 
 #WD
 setwd("~/") #erases previously set WDs
-setwd("Personal repo - zmancekpali/Data Science Tutorial") #sets a new one
+setwd("Tutorial DS") #sets a new one
 getwd() #check that it's worked
 
 #Libraries
 library(ggmap)
 library(gridExtra)
+library(rmarkdown)
 library(tidyverse)
 
 #Set up the google maps connection
 ggmap::register_google(key = "AIzaSyDnersipSvcXuK4tCDbr8NOpa-qsrYf9pc", 
                        write = TRUE) #register your own Google API Key here
-#Data wrangling
-coords <- read.csv("traits_analysis.csv") %>% 
-  select("type", "code", "latin_name", "long", "lat") %>%  #select the longitude, latitude, invasion type and species code
+
+#Data
+leaves <- read.csv("Data/traits_analysis.csv")
+bugs <- read.csv("Data/bugs.csv")
+
+#Data import and wrangling
+leaves <- leaves %>% 
+  select("type", "code", "latin_name", "long", "lat") %>%  #select the relevant columns
   mutate(type = recode(type, "Alien" = "Alien species",
                        "Invasive" = "Invasive species", 
                        "Naturalised" = "Naturalised species", 
@@ -31,25 +37,42 @@ coords <- read.csv("traits_analysis.csv") %>%
 (edinburgh <- map <- get_googlemap("edinburgh", zoom = 16))
 rbge <- c(left = -3.2140, bottom = 55.9627, right = -3.2025, top = 55.9682) #set the map view window accordingly; I want to view the Botanics
 edi_map_terrain <- get_map(rbge, maptype='terrain', source="google", zoom=16) #specify what kind of map you want
-terrain_map <- ggmap(edi_map_terrain)
+(terrain_map <- ggmap(edi_map_terrain) +
+    xlab("Longitude") +
+    ylab("Latitude\n") +
+    annotate("text", x = -3.214, y = 55.968, colour = "black", label = "a)", size = 4.5, 
+             fontface = "bold"))
 
 edi_map_roadmap <- get_map(rbge, maptype='roadmap', source="google", zoom=16) #specify what kind of map you want
-roadmap <- ggmap(edi_map_roadmap)
-
+(roadmap <- ggmap(edi_map_roadmap) +
+  xlab("Longitude") +
+  ylab("Latitude\n"))
+  
 edi_map_satellite <- get_map(rbge, maptype='satellite', source="google", zoom=16) #specify what kind of map you want
-satellite_map <- ggmap(edi_map_satellite)
+(satellite_map <- ggmap(edi_map_satellite) +
+    xlab("Longitude") +
+    ylab("Latitude\n"))
 
 edi_map_hybrid <- get_map(rbge, maptype='hybrid', source="google", zoom=16) #specify what kind of map you want
-hybrid_map <- ggmap(edi_map_hybrid)
+(hybrid_map <- ggmap(edi_map_hybrid) +
+    xlab("Longitude") +
+    ylab("Latitude\n"))
 
-maps_grid <- grid.arrange(terrain_map, roadmap, satellite_map, hybrid_map, ncol = 2) #maybe annotate these?
-
+(maps_grid <- grid.arrange(terrain_map, roadmap, satellite_map, hybrid_map, ncol = 2)) #maybe annotate these?
+ggsave("map_types_option.jpg", maps_grid, path = "Plots", units = "cm", 
+       width = 30, height = 20)
 
 #the final map
+(initial_simple_map <- ggmap(edi_map_satellite) +
+    geom_point(data = leaves, aes(x = long, y = lat, color = type, shape = type), 
+               size = 3))
+ggsave("initial_map1.jpg", initial_simple_map, path = "Plots", units = "cm", 
+       width = 30, height = 20)
+
 (map_with_names <- ggmap(edi_map_satellite) +
-    geom_point(data = coords, aes(x = long, y = lat, color = type, shape = type), 
+    geom_point(data = leaves, aes(x = long, y = lat, color = type, shape = type), 
                size = 3) +
-    scale_color_manual(values = c("#5EA8D9", "#CD6090", "#698B69", "#EEC900"),
+    scale_color_manual(values = c("#5EA8D9", "#CD6090", "#2CB82E", "#EEC900"),
                        name = "Invasion type") +
     scale_shape_manual(values = c(16, 17, 18, 15), name = "Invasion type") +
     xlab("Longitude") +
@@ -57,13 +80,14 @@ maps_grid <- grid.arrange(terrain_map, roadmap, satellite_map, hybrid_map, ncol 
     theme(legend.position = c(0.85, 0.87),
           legend.key = element_rect(fill = "floralwhite"),
           legend.background = element_rect(fill = "floralwhite")) +
-    ggrepel::geom_label_repel(data = coords, aes(x = long, y = lat, label = latin_name),
+    ggrepel::geom_label_repel(data = leaves, aes(x = long, y = lat, label = latin_name),
                               max.overlaps = 200, box.padding = 0.5, point.padding = 0.1, 
                               segment.color = "floralwhite", size = 3, fontface = "italic"))
-
+ggsave("map_with_names.jpg", map_with_names, path = "Plots", units = "cm", 
+       width = 30, height = 20)
 
 (map_with_codes <- ggmap(edi_map_satellite) +
-    geom_point(data = coords, aes(x = long, y = lat, color = type, shape = type), 
+    geom_point(data = leaves, aes(x = long, y = lat, color = type, shape = type), 
                size = 3) +
     scale_color_manual(values = c("#5EA8D9", "#CD6090", "#698B69", "#EEC900"),
                        name = "Invasion type") +
@@ -73,10 +97,12 @@ maps_grid <- grid.arrange(terrain_map, roadmap, satellite_map, hybrid_map, ncol 
     theme(legend.position = c(0.85, 0.87),
           legend.key = element_rect(fill = "floralwhite"),
           legend.background = element_rect(fill = "floralwhite")) +
-    ggrepel::geom_label_repel(data = coords, aes(x = long, y = lat, label = code),
+    ggrepel::geom_label_repel(data = leaves, aes(x = long, y = lat, label = code),
                               max.overlaps = 200, box.padding = 0.5, 
                               point.padding = 0.1, segment.color = "floralwhite", 
                               size = 3, fontface = "italic"))
+ggsave("map_with_codes.jpg", map_with_codes, path = "Plots", units = "cm", 
+       width = 30, height = 20)
 
 
 #Coding club stuff: ----

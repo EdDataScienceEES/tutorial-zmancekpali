@@ -1,4 +1,4 @@
-<center>![Image credit: Google Maps](https://cdn.arstechnica.net/wp-content/uploads/2023/09/Google-Maps-640x361.jpg) <center>
+![Image credit: Google Maps](https://cdn.arstechnica.net/wp-content/uploads/2023/09/Google-Maps-640x361.jpg)
 
 
 ________________
@@ -23,8 +23,7 @@ This tutorial explores two common examples of ecological spatial visualisation -
 
 ### 1. The set up:
 
-The begin, set up your working directory in your script and load the necessary libraries: 
-
+The begin, set up your working directory in your script and load the necessary libraries:
 ```r
 #WD
 setwd("~/") #erases any previously set WDs
@@ -39,7 +38,9 @@ library(tidyverse)
 
 To be able to work through this tutorial, we need to enable a connection between RStudio and Google Maps - and we can do that using an API key (application programming interface; basically allows a connection of an app and the identification of a user on that app). To create your own API key, follow these steps: 
 
-1. Go to the [Credentials page of the Google Maps Platform](https://console.cloud.google.com/projectselector2/google/maps-apis/credentials?utm_source=Docs_CreateAPIKey&utm_content=Docs_maps-backend) and select "Create project". Pick a name for it, and ignore the organisation ('No organisation' is fine for the purposes of this tutorial). Press "Create" and copy the API key it provides you (e.g. mine is  AIzaSyDnersipSvcXuK4tCDbr8NOpa-qsrYf9pc), and add it into your script like so:
+1. Go to the [Credentials page of the Google Maps Platform](https://console.cloud.google.com/projectselector2/google/maps-apis/credentials?utm_source=Docs_CreateAPIKey&utm_content=Docs_maps-backend) and select "Create project". 
+2. Pick a name for it, and ignore the organisation ('No organisation' is fine for the purposes of this tutorial). 
+3. Press "Create" and copy the API key it provides you (e.g. mine is  AIzaSyDnersipSvcXuK4tCDbr8NOpa-qsrYf9pc), and add it into your script like so:
 ```r
 ggmap::register_google(key = "your key here", write = TRUE) #register your own Google API Key here
 ```
@@ -153,18 +154,10 @@ We can also plot the species abbreviation code I used to make the map a bit less
                               size = 3, fontface = "italic"))
 ```
 ![with codes instead](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/map_with_codes.jpg)
+
+
 ### Plotting locations of transects
 
-You can add more text and code, e.g.
-
-```r
-# Create fake data
-x_dat <- rnorm(n = 100, mean = 5, sd = 2)  # x data
-y_dat <- rnorm(n = 100, mean = 10, sd = 0.2)  # y data
-xy <- data.frame(x_dat, y_dat)  # combine into data frame
-```
-
-Here you can add some more text if you wish.
 
 ```r
 xy_fil <- xy %>%  # Create object with the contents of `xy`
