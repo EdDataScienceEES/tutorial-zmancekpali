@@ -39,30 +39,74 @@ library(tidyverse)
 
 To be able to work through this tutorial, we need to enable a connection between RStudio and Google Maps - and we can do that using an API key (application programming interface; basically allows a connection of an app and the identification of a user on that app). To create your own API key, follow these steps: 
 
-1. Go to the [Credentials page of the Google Maps Platform](https://console.cloud.google.com/projectselector2/google/maps-apis/credentials?utm_source=Docs_CreateAPIKey&utm_content=Docs_maps-backend) and select "Create project". Pick a name for it, and ignore the organisation ('No organisation' is fine for the purposes of this tutorial). Press "Create" and copy the API key it provides you (e.g. AIzaSyDnersipSvcXuK4tCDbr8NOpa-qsrYf9pc), and add it into your script like so:
+1. Go to the [Credentials page of the Google Maps Platform](https://console.cloud.google.com/projectselector2/google/maps-apis/credentials?utm_source=Docs_CreateAPIKey&utm_content=Docs_maps-backend) and select "Create project". Pick a name for it, and ignore the organisation ('No organisation' is fine for the purposes of this tutorial). Press "Create" and copy the API key it provides you (e.g. mine is  AIzaSyDnersipSvcXuK4tCDbr8NOpa-qsrYf9pc), and add it into your script like so:
 ```
 ggmap::register_google(key = "your key here", write = TRUE) #register your own Google API Key here
 ```
+If you can't get your key to work for any reason, feel free to use mine to complete the tutorial.
 
+The data we are working with come from two of my projects: a field course and my dissertation. The leaves dataset is my dissertation dataset (I collected a variety of leaf trait data to compare the differences between naturalised, native, and invasive tree species in Scotland). The bugs dataset is from the 4th year field course I attended this summer during which we collected insect and plant diversity data along different transects across forest edges. Both datasets contain a wide array of data, but for the purpose of this tutorial, we are mostly interested in the location data (the longitude and latitude columns) and the descriptors (e.g. the tree species or the transect ID). 
 
-At the beginning of your tutorial you can ask people to open `RStudio`, create a new script by clicking on `File/ New File/ R Script` set the working directory and load some packages, for example `ggplot2` and `dplyr`. You can surround package names, functions, actions ("File/ New...") and small chunks of code with backticks, which defines them as inline code blocks and makes them stand out among the text, e.g. `ggplot2`.
-
-When you have a larger chunk of code, you can paste the whole code in the `Markdown` document and add three backticks on the line before the code chunks starts and on the line after the code chunks ends. After the three backticks that go before your code chunk starts, you can specify in which language the code is written, in our case `R`.
-
-To find the backticks on your keyboard, look towards the top left corner on a Windows computer, perhaps just above `Tab` and before the number one key. On a Mac, look around the left `Shift` key. You can also just copy the backticks from below.
-
-```r
-# Set the working directory
-setwd("your_filepath")
-
-# Load packages
-library(ggplot2)
-library(dplyr)
+To complete the setup, import the two datasets like so: 
+```
+leaves <- read.csv("Data/traits_analysis.csv")
+bugs <- read.csv("Data/bugs.csv")
 ```
 
-<a name="section2"></a>
 
-## 2. The second section
+### Plotting locations of individual samples
+
+To plot where exactly each tree within our trees dataset is located, we need to clean up the data a bit first. The last command in this tidying chunk removes repeat longitude/latitude values (as I had multiple samples from the same trees; it makes for cleaner maps): 
+```
+leaves <- leaves %>% 
+  select("type", "code", "latin_name", "long", "lat") %>%  #select the relevant columns
+  mutate(type = recode(type, "Alien" = "Alien species",
+                       "Invasive" = "Invasive species", 
+                       "Naturalised" = "Naturalised species", 
+                       "Native" = "Native species")) %>%  #recode the invasion type names
+  distinct(long, lat, .keep_all = TRUE) #remove multiple rows (avoids overplotting)
+
+```
+
+We also need to let RStudio know where exactly we want to plot the data; in this case, all the samples were from the Royal Botanic Gardens Edinburgh, so we let R know that we want to plot Edinburgh and set the exact centre of the map to RBGE: 
+```
+(edinburgh <- map <- get_googlemap("edinburgh", zoom = 16))
+rbge <- c(left = -3.2140, bottom = 55.9627, right = -3.2025, top = 55.9682) #set the map view window accordingly; we want to view the RBGE
+```
+
+
+Now that we have a map of RBGE, we can select which type of map is best for our purposes from: terrain, roadmap, sattelite, or hybrid. To select which one you think is best, you can plot them all and select one: 
+
+```
+edi_map_terrain <- get_map(rbge, maptype='terrain', source="google", zoom=16) #specify what kind of map you want
+(terrain_map <- ggmap(edi_map_terrain) +
+    xlab("Longitude") +
+    ylab("Latitude\n") +
+    annotate("text", x = -3.214, y = 55.968, colour = "black", label = "a)", size = 4.5, 
+             fontface = "bold"))
+
+edi_map_roadmap <- get_map(rbge, maptype='roadmap', source="google", zoom=16) 
+(roadmap <- ggmap(edi_map_roadmap) +
+  xlab("Longitude") +
+  ylab("Latitude\n"))
+  
+edi_map_satellite <- get_map(rbge, maptype='satellite', source="google", zoom=16) 
+(satellite_map <- ggmap(edi_map_satellite) +
+    xlab("Longitude") +
+    ylab("Latitude\n"))
+
+edi_map_hybrid <- get_map(rbge, maptype='hybrid', source="google", zoom=16)
+(hybrid_map <- ggmap(edi_map_hybrid) +
+    xlab("Longitude") +
+    ylab("Latitude\n"))
+```
+
+
+Here you can see them all side by side; for this study, I would most likely select satellite:
+![map options](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/map_types_option.jpg)
+
+
+### Plotting locations of transects
 
 You can add more text and code, e.g.
 
