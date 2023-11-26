@@ -106,9 +106,53 @@ Here you can see them all side by side; for this study, I would most likely sele
 ![map options](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/map_types_option.jpg)
 
 
-No that 
+Now that we have the connection to Google Maps, the data, and the maps set up, we can finally plot the individual trees. To start, let's simply plot a dot for each tree:
+```
+(initial_simple_map <- ggmap(edi_map_satellite) +
+    geom_point(data = leaves, aes(x = long, y = lat, color = type, shape = type), 
+               size = 3))
+```
+![initial map](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/initial_map1.jpg)
+
+But we can make this look a lot more informative by adding the species names to each dot as a label:
+```
+(map_with_names <- ggmap(edi_map_satellite) +
+    geom_point(data = leaves, aes(x = long, y = lat, color = type, shape = type), 
+               size = 3) +
+    scale_color_manual(values = c("#5EA8D9", "#CD6090", "#698B69", "#EEC900"),
+                       name = "Invasion type") +
+    scale_shape_manual(values = c(16, 17, 18, 15), name = "Invasion type") +
+    xlab("Longitude") +
+    ylab("Latitude") +
+    theme(legend.position = c(0.85, 0.87),
+          legend.key = element_rect(fill = "floralwhite"),
+          legend.background = element_rect(fill = "floralwhite")) +
+    ggrepel::geom_label_repel(data = leaves, aes(x = long, y = lat, label = latin_name),
+                              max.overlaps = 200, box.padding = 0.5, point.padding = 0.1, 
+                              segment.color = "floralwhite", size = 3, fontface = "italic"))
+```
+![labelled](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/map_with_names.jpg)
 
 
+We can also plot the species abbreviation code I used to make the map a bit less cluttered with text (however, this would not really be usable in formal academic reports without a legend explaining each abbreviation). Still, for the purpose of this tutorial, we can see it looks much cleaner:
+```
+(map_with_codes <- ggmap(edi_map_satellite) +
+    geom_point(data = leaves, aes(x = long, y = lat, color = type, shape = type), 
+               size = 3) +
+    scale_color_manual(values = c("#5EA8D9", "#CD6090", "#698B69", "#EEC900"),
+                       name = "Invasion type") +
+    scale_shape_manual(values = c(16, 17, 18, 15), name = "Invasion type") +
+    xlab("Longitude") +
+    ylab("Latitude") +
+    theme(legend.position = c(0.85, 0.87),
+          legend.key = element_rect(fill = "floralwhite"),
+          legend.background = element_rect(fill = "floralwhite")) +
+    ggrepel::geom_label_repel(data = leaves, aes(x = long, y = lat, label = code),
+                              max.overlaps = 200, box.padding = 0.5, 
+                              point.padding = 0.1, segment.color = "floralwhite", 
+                              size = 3, fontface = "italic"))
+```
+![with codes instead](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/map_with_codes.jpg)
 ### Plotting locations of transects
 
 You can add more text and code, e.g.
