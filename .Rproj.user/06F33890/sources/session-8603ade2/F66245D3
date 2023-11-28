@@ -3,7 +3,7 @@
     "path": "~/Tutorial DS/Script/Tutorial script.R",
     "project_path": "Script/Tutorial script.R",
     "type": "r_source",
-    "hash": "0",
+    "hash": "4185152204",
     "contents": "",
     "dirty": false,
     "created": 1701032186332.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "2,35",
+        "cursorPosition": "14,14",
         "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1701032192,
+    "lastKnownWriteTime": 1701185985,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1701032192158,
+    "last_content_update": 1701185985570,
     "read_only": false,
     "read_only_alternatives": []
 }

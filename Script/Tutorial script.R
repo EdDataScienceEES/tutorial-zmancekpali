@@ -34,26 +34,32 @@ leaves <- leaves %>%
                        "Native" = "Native species")) %>%  #recode the invasion type names
   distinct(long, lat, .keep_all = TRUE) #remove multiple rows (avoids overplotting)
 
-(edinburgh <- map <- get_googlemap("edinburgh", zoom = 16))
+bugs <- bugs %>% 
+  select("site", "transect", "long", "lat", "quad") %>%  #select the relevant columns
+  distinct(long, lat, .keep_all = TRUE) #remove multiple rows (avoids overplotting)
+
+
+#Edinburgh maps ----
+(edinburgh <- get_googlemap("edinburgh", zoom = 16))
 rbge <- c(left = -3.2140, bottom = 55.9627, right = -3.2025, top = 55.9682) #set the map view window accordingly; I want to view the Botanics
-edi_map_terrain <- get_map(rbge, maptype='terrain', source="google", zoom=16) #specify what kind of map you want
+edi_map_terrain <- get_map(rbge, maptype ='terrain', source="google", zoom=16) #specify what kind of map you want
 (terrain_map <- ggmap(edi_map_terrain) +
     xlab("Longitude") +
     ylab("Latitude\n") +
     annotate("text", x = -3.214, y = 55.968, colour = "black", label = "a)", size = 4.5, 
              fontface = "bold"))
 
-edi_map_roadmap <- get_map(rbge, maptype='roadmap', source="google", zoom=16) #specify what kind of map you want
+edi_map_roadmap <- get_map(rbge, maptype ='roadmap', source = "google", zoom = 16) #specify what kind of map you want
 (roadmap <- ggmap(edi_map_roadmap) +
   xlab("Longitude") +
   ylab("Latitude\n"))
   
-edi_map_satellite <- get_map(rbge, maptype='satellite', source="google", zoom=16) #specify what kind of map you want
+edi_map_satellite <- get_map(rbge, maptype ='satellite', source = "google", zoom = 16) #specify what kind of map you want
 (satellite_map <- ggmap(edi_map_satellite) +
     xlab("Longitude") +
     ylab("Latitude\n"))
 
-edi_map_hybrid <- get_map(rbge, maptype='hybrid', source="google", zoom=16) #specify what kind of map you want
+edi_map_hybrid <- get_map(rbge, maptype = 'hybrid', source = "google", zoom = 16) #specify what kind of map you want
 (hybrid_map <- ggmap(edi_map_hybrid) +
     xlab("Longitude") +
     ylab("Latitude\n"))
@@ -63,13 +69,13 @@ ggsave("map_types_option.jpg", maps_grid, path = "Plots", units = "cm",
        width = 30, height = 20)
 
 #the final map
-(initial_simple_map <- ggmap(edi_map_satellite) +
+(rbge_simple_map <- ggmap(edi_map_satellite) +
     geom_point(data = leaves, aes(x = long, y = lat, color = type, shape = type), 
                size = 3))
-ggsave("initial_map1.jpg", initial_simple_map, path = "Plots", units = "cm", 
+ggsave("rbge_initial_map.jpg", rbge_simple_map, path = "Plots", units = "cm", 
        width = 30, height = 20)
 
-(map_with_names <- ggmap(edi_map_satellite) +
+(rbge_map_with_names <- ggmap(edi_map_satellite) +
     geom_point(data = leaves, aes(x = long, y = lat, color = type, shape = type), 
                size = 3) +
     scale_color_manual(values = c("#5EA8D9", "#CD6090", "#2CB82E", "#EEC900"),
@@ -83,7 +89,7 @@ ggsave("initial_map1.jpg", initial_simple_map, path = "Plots", units = "cm",
     ggrepel::geom_label_repel(data = leaves, aes(x = long, y = lat, label = latin_name),
                               max.overlaps = 200, box.padding = 0.5, point.padding = 0.1, 
                               segment.color = "floralwhite", size = 3, fontface = "italic"))
-ggsave("map_with_names.jpg", map_with_names, path = "Plots", units = "cm", 
+ggsave("rbge_map_with_names.jpg", rbge_map_with_names, path = "Plots", units = "cm", 
        width = 30, height = 20)
 
 (map_with_codes <- ggmap(edi_map_satellite) +
@@ -103,6 +109,34 @@ ggsave("map_with_names.jpg", map_with_names, path = "Plots", units = "cm",
                               size = 3, fontface = "italic"))
 ggsave("map_with_codes.jpg", map_with_codes, path = "Plots", units = "cm", 
        width = 30, height = 20)
+
+#Transect maps ----
+(badaguish <- map <- get_googlemap("Badaguish", zoom = 16))
+badaguish <- c(left = -3.743385, bottom = 57.169712, right = -3.672460, top = 57.204606) #set the map view window accordingly; I want to view the Botanics
+
+badaguish_sattelite <- get_map(badaguish, maptype = 'satellite', source = "google", 
+                               zoom = 12)
+(transect_simple_map <- ggmap(badaguish_sattelite) +
+    geom_point(data = bugs, aes(x = long, y = lat, color = site), 
+               size = 10))
+
+ggsave("initial_map1.jpg", initial_simple_map, path = "Plots", units = "cm", 
+       width = 30, height = 20)
+
+(map_with_names <- ggmap(edi_map_satellite) +
+    geom_point(data = leaves, aes(x = long, y = lat, color = type, shape = type), 
+               size = 3) +
+    scale_color_manual(values = c("#5EA8D9", "#CD6090", "#2CB82E", "#EEC900"),
+                       name = "Invasion type") +
+    scale_shape_manual(values = c(16, 17, 18, 15), name = "Invasion type") +
+    xlab("Longitude") +
+    ylab("Latitude") +
+    theme(legend.position = c(0.85, 0.87),
+          legend.key = element_rect(fill = "floralwhite"),
+          legend.background = element_rect(fill = "floralwhite")) +
+    ggrepel::geom_label_repel(data = leaves, aes(x = long, y = lat, label = latin_name),
+                              max.overlaps = 200, box.padding = 0.5, point.padding = 0.1, 
+                              segment.color = "floralwhite", size = 3, fontface = "italic"))
 
 
 #Coding club stuff: ----
