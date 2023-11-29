@@ -35,7 +35,7 @@ leaves <- leaves %>%
   distinct(long, lat, .keep_all = TRUE) #remove multiple rows (avoids overplotting)
 
 bugs <- bugs %>% 
-  select("site", "transect", "long", "lat", "quad") %>%  #select the relevant columns
+  select("site", "transect", "long", "lat", "quad", "Id") %>%  #select the relevant columns
   distinct(long, lat, .keep_all = TRUE) #remove multiple rows (avoids overplotting)
 
 
@@ -110,39 +110,95 @@ ggsave("rbge_map_with_names.jpg", rbge_map_with_names, path = "Plots", units = "
 ggsave("map_with_codes.jpg", map_with_codes, path = "Plots", units = "cm", 
        width = 30, height = 20)
 
+
 #Transect maps ----
 (badaguish <- map <- get_googlemap("Badaguish", zoom = 16))
-badaguish <- c(left = -3.743385, bottom = 57.169712, right = -3.672460, top = 57.204606) #set the map view window accordingly; I want to view the Botanics
+badaguish_sites <- c(left = -3.730, bottom = 57.174, right = -3.70, top = 57.20) #set the map view window accordingly
 
-badaguish_sattelite <- get_map(badaguish, maptype = 'satellite', source = "google", 
-                               zoom = 12)
+(badaguish_sattelite <- get_map(badaguish_sites, maptype = 'satellite', source = "google", 
+                               zoom = 14))
+
 (transect_simple_map <- ggmap(badaguish_sattelite) +
-    geom_point(data = bugs, aes(x = long, y = lat, color = site), 
-               size = 10))
-
-ggsave("initial_map1.jpg", initial_simple_map, path = "Plots", units = "cm", 
+  geom_point(data = bugs, aes(x = long, y = lat, color = as.factor(site)), 
+             size = 3) +
+  scale_color_manual(values = c("#5EA8D9", "#CD6090", "#2CB82E", "#EEC900"),
+                     name = "Site")) #as you can see, the sites are quite far apart (so this is still a good figure)
+#but lets make individual maps for each site, so we can see the environment of each transect
+ggsave("transect_simple.png", transect_simple_map, path = "Plots", units = "cm",
        width = 30, height = 20)
 
-(map_with_names <- ggmap(edi_map_satellite) +
-    geom_point(data = leaves, aes(x = long, y = lat, color = type, shape = type), 
-               size = 3) +
-    scale_color_manual(values = c("#5EA8D9", "#CD6090", "#2CB82E", "#EEC900"),
-                       name = "Invasion type") +
-    scale_shape_manual(values = c(16, 17, 18, 15), name = "Invasion type") +
-    xlab("Longitude") +
-    ylab("Latitude") +
-    theme(legend.position = c(0.85, 0.87),
-          legend.key = element_rect(fill = "floralwhite"),
-          legend.background = element_rect(fill = "floralwhite")) +
-    ggrepel::geom_label_repel(data = leaves, aes(x = long, y = lat, label = latin_name),
-                              max.overlaps = 200, box.padding = 0.5, point.padding = 0.1, 
-                              segment.color = "floralwhite", size = 3, fontface = "italic"))
+#Site 1
+site1_coords <- bugs %>% filter(site == "1")
+site1 <- c(left = -3.730, bottom = 57.185, right = -3.745, top = 57.198) #set the map view window accordingly
+(site1_sattelite <- get_map(site1, maptype = 'satellite', source = "google", 
+                                zoom = 17))
+(site1_map <- ggmap(site1_sattelite) +
+    geom_point(data = site1_coords, aes(x = long, y = lat, color = as.factor(transect)), size = 2) +
+    geom_line(data = site1_coords, aes(x = long, y = lat, color = as.factor(transect)),
+              linewidth = 1) +
+    annotate("text", x = -3.735, y = 57.193, label = "Site 1", color = "white", 
+             fontface = "bold") +
+    scale_color_manual(values = c("A" = "#5EA8D9", "B" = "#5EA8D9")) +
+    labs(color = "Transects"))
+ggsave("site1.png", site1_map, path = "Plots", units = "cm",
+       width = 30, height = 20)
 
 
-#Coding club stuff: ----
-#Libraries
-library(rgdal)  # readOGR() spTransform()
-library(raster)  # intersect()
-library(ggsn)  # north2() scalebar()
-library(rworldmap)  # getMap()
+#Site 2
+site2_coords <- bugs %>% filter(site == "2")
+site2 <- c(left = -3.728, bottom = 57.184, right = -3.724, top = 57.1867) #set the map view window accordingly
+(site2_sattelite <- get_map(site2, maptype = 'satellite', source = "google", 
+                            zoom = 17))
+(site2_map <- ggmap(site2_sattelite) +
+    geom_point(data = site2_coords, aes(x = long, y = lat, color = as.factor(transect)), 
+               size = 2) +
+    geom_line(data = site2_coords, aes(x = long, y = lat, color = as.factor(transect)),
+              linewidth = 1) +
+    annotate("text", x = -3.7235, y = 57.187, label = "Site 2", color = "white", 
+             fontface = "bold") +
+    scale_color_manual(values = c("A" = "#CD6090", "B" = "#CD6090")) +
+    labs(color = "Transects"))
+ggsave("site2.png", site2_map, path = "Plots", units = "cm",
+       width = 30, height = 20)
+
+
+#Site 3
+site3_coords <- bugs %>% filter(site == "3")
+site3 <- c(left = -3.72, bottom = 57.175, right = -3.70, top = 57.18) #set the map view window accordingly
+(site3_sattelite <- get_map(site3, maptype = 'satellite', source = "google", 
+                            zoom = 17))
+(site3_map <- ggmap(site3_sattelite) +
+    geom_point(data = site3_coords, aes(x = long, y = lat, color = as.factor(transect)), 
+               size = 2) +
+    geom_line(data = site3_coords, aes(x = long, y = lat, color = as.factor(transect)),
+              linewidth = 1) +
+    annotate("text", x = -3.7075, y = 57.179, label = "Site 3", color = "white", 
+             fontface = "bold") +
+    scale_color_manual(values = c("A" = "#2CB82E", "B" = "#2CB82E")) +
+    labs(color = "Transects"))
+ggsave("site3.png", site3_map, path = "Plots", units = "cm",
+       width = 30, height = 20)
+
+
+#Site 3
+site4_coords <- bugs %>% filter(site == "4")
+site4 <- c(left = -3.71, bottom = 57.174, right = -3.70, top = 57.177) #set the map view window accordingly
+(site4_sattelite <- get_map(site4, maptype = 'satellite', source = "google", 
+                            zoom = 17))
+(site4_map <- ggmap(site4_sattelite) +
+    geom_point(data = site4_coords, aes(x = long, y = lat, color = as.factor(transect)), 
+               size = 2) +
+    geom_line(data = site4_coords, aes(x = long, y = lat, color = as.factor(transect)),
+              linewidth = 1) +
+    annotate("text", x = -3.7025, y = 57.177, label = "Site 4", color = "white", 
+             fontface = "bold") +
+    scale_color_manual(values = c("A" = "#EEC900", "B" = "#EEC900")) +
+    labs(color = "Transects"))
+ggsave("site4.png", site4_map, path = "Plots", units = "cm",
+       width = 30, height = 20)
+
+(sites_grid <- grid.arrange(site1_map, site2_map, site3_map, site4_map, ncol = 4))
+ggsave("sites_grid.png", sites_grid, path = "Plots", units = "cm", 
+       width = 50, height = 10)
+
 

@@ -157,11 +157,25 @@ We can also plot the species abbreviation code I used to make the map a bit less
 
 
 ### Plotting locations of transects
-For the second section, we can plot transect sites (a very common sampling method in ecology and environmental sciences). To do that, we will set the centre of the map to Badaguish, Scotland, as that's where the study sites were located. Set up your script like so:
+For the second section, we can plot transect sites (a very common sampling method in ecology and environmental sciences). To do that, we will set the centre of the map to Badaguish, Scotland, as that's where the study sites were located. Set up your script like so and plot the data:
 
 ```r
+(badaguish <- map <- get_googlemap("Badaguish", zoom = 16))
+badaguish_sites <- c(left = -3.730, bottom = 57.174, right = -3.70, top = 57.20)
 
+(badaguish_sattelite <- get_map(badaguish_sites, maptype = 'satellite', source = "google", zoom = 14))
+
+(transect_simple_map <- ggmap(badaguish_sattelite) +
+  geom_point(data = bugs, aes(x = long, y = lat, color = as.factor(site)), 
+             size = 3) +
+  scale_color_manual(values = c("#5EA8D9", "#CD6090", "#2CB82E", "#EEC900"),
+                     name = "Site")) 
 ```
+
+![transect figure]()
+
+
+
 
 And finally, plot the data:
 
