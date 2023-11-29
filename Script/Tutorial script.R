@@ -194,9 +194,9 @@ site4 <- c(left = -3.71, bottom = 57.174, right = -3.70, top = 57.177) #set the 
     annotate("text", x = -3.7025, y = 57.177, label = "Site 4", color = "white", 
              fontface = "bold") +
     scale_color_manual(values = c("A" = "#EEC900", "B" = "#EEC900")) +
-    labs(color = "Transects") +
-    ggmap::annotation_scale_bar(location = "bottomleft", width_hint = 0.1, 
-                                    dist_hint = 1, transform_hint = 0.5))
+    labs(color = "Transects"))
+
+site4_map + ggspatial::annotation_scale_bar(location = "bottomleft", width_hint = 0.1, dist_hint = 1, transform_hint = 0.5)
 
 ggsave("site4.png", site4_map, path = "Plots", units = "cm",
        width = 30, height = 20)
