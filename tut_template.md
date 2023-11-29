@@ -172,22 +172,94 @@ badaguish_sites <- c(left = -3.730, bottom = 57.174, right = -3.70, top = 57.20)
                      name = "Site")) 
 ```
 
-![transect figure]()
+![transect figure](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/transect_simple.png)
 
-
-
-
-And finally, plot the data:
+We can now see the exact location of each of our transects and the sampling points along them. However, you want your figures to be more detailed in general, so let's instead plot a more detailed map for each site and make a grid of them (this way, we can see the exact habitat of our sampling sites):
 
 ```r
-ggplot(data = xy_fil, aes(x = x_dat, y = y_dat)) +  # Select the data to use
-	geom_point() +  # Draw scatter points
-	geom_smooth(method = "loess")  # Draw a loess curve
+#Site 1
+site1_coords <- bugs %>% filter(site == "1")
+site1 <- c(left = -3.730, bottom = 57.185, right = -3.745, top = 57.198) #set the map view window accordingly
+(site1_sattelite <- get_map(site1, maptype = 'satellite', source = "google", 
+                                zoom = 17))
+(site1_map <- ggmap(site1_sattelite) +
+    geom_point(data = site1_coords, aes(x = long, y = lat, color = as.factor(transect)), size = 2) +
+    geom_line(data = site1_coords, aes(x = long, y = lat, color = as.factor(transect)),
+              linewidth = 1) +
+    annotate("text", x = -3.735, y = 57.193, label = "Site 1", color = "white", 
+             fontface = "bold") +
+    scale_color_manual(values = c("A" = "#5EA8D9", "B" = "#5EA8D9")) +
+    labs(color = "Transects"))
+
+#Site 2
+site2_coords <- bugs %>% filter(site == "2")
+site2 <- c(left = -3.728, bottom = 57.184, right = -3.724, top = 57.1867) #set the map view window accordingly
+(site2_sattelite <- get_map(site2, maptype = 'satellite', source = "google", 
+                            zoom = 17))
+(site2_map <- ggmap(site2_sattelite) +
+    geom_point(data = site2_coords, aes(x = long, y = lat, color = as.factor(transect)), 
+               size = 2) +
+    geom_line(data = site2_coords, aes(x = long, y = lat, color = as.factor(transect)),
+              linewidth = 1) +
+    annotate("text", x = -3.7235, y = 57.187, label = "Site 2", color = "white", 
+             fontface = "bold") +
+    scale_color_manual(values = c("A" = "#CD6090", "B" = "#CD6090")) +
+    labs(color = "Transects"))
+
+
+#Site 3
+site3_coords <- bugs %>% filter(site == "3")
+site3 <- c(left = -3.72, bottom = 57.175, right = -3.70, top = 57.18) #set the map view window accordingly
+(site3_sattelite <- get_map(site3, maptype = 'satellite', source = "google", 
+                            zoom = 17))
+(site3_map <- ggmap(site3_sattelite) +
+    geom_point(data = site3_coords, aes(x = long, y = lat, color = as.factor(transect)), 
+               size = 2) +
+    geom_line(data = site3_coords, aes(x = long, y = lat, color = as.factor(transect)),
+              linewidth = 1) +
+    annotate("text", x = -3.7075, y = 57.179, label = "Site 3", color = "white", 
+             fontface = "bold") +
+    scale_color_manual(values = c("A" = "#2CB82E", "B" = "#2CB82E")) +
+    labs(color = "Transects"))
+
+#Site 3
+site4_coords <- bugs %>% filter(site == "4")
+site4 <- c(left = -3.71, bottom = 57.174, right = -3.70, top = 57.177) #set the map view window accordingly
+(site4_sattelite <- get_map(site4, maptype = 'satellite', source = "google", 
+                            zoom = 17))
+(site4_map <- ggmap(site4_sattelite) +
+    geom_point(data = site4_coords, aes(x = long, y = lat, color = as.factor(transect)), 
+               size = 2) +
+    geom_line(data = site4_coords, aes(x = long, y = lat, color = as.factor(transect)),
+              linewidth = 1) +
+    annotate("text", x = -3.7025, y = 57.177, label = "Site 4", color = "white", 
+             fontface = "bold") +
+    scale_color_manual(values = c("A" = "#EEC900", "B" = "#EEC900")) +
+    labs(color = "Transects"))
 ```
 
-At this point it would be a good idea to include an image of what the plot is meant to look like so students can check they've done it right. Replace `IMAGE_NAME.png` with your own image file:
+![site1]()
+![site2]()
+![site3]()
+![site4]()
 
-<center> <img src="{{ site.baseurl }}/IMAGE_NAME.png" alt="Img" style="width: 800px;"/> </center>
+
+You can now see each individual sample site much more zoomed in, and if you wish, you can even arrange a grid of all four plots and save it:
+
+```r
+(sites_grid <- grid.arrange(site1_map, site2_map, site3_map, site4_map, ncol = 4))
+ggsave("sites_grid.png", sites_grid, path = "Plots", units = "cm", 
+       width = 50, height = 10)
+```
+
+![grid]()
+
+Now you've produced five perfect maps that shows the habitat of your sampling site! To make the figures report-ready, you can even include a scale and a compas rose like so (e.g. on the RBGE map): 
+
+```r
+
+```
+
 
 <a name="section1"></a>
 
