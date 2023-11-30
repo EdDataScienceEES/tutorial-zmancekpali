@@ -5,6 +5,7 @@ Due date: December 4th, noon (after extension)
 
 
 ![pic](https://cdn.arstechnica.net/wp-content/uploads/2023/09/Google-Maps-640x361.jpg)
+
 Image credit: Google Maps
 
 _____________
