@@ -2,7 +2,7 @@
 
 
 ________________
-<left>## Visualising spatial data with ggplot and Google Maps
+# Visualising spatial data with ggplot and Google Maps
 
 #### Tutorial Aims and Background:
 The general aim of this tutorial is to learn how to use geographical location data and plot it using ggplot and Google Maps. The tutorial is aimed at someone who has some experience with using ggplot for data visualisation and the tidyverse for data manipulation. The three main aims of this tutorial are to learn how to plot different ecological geographical data on a Google Maps underlay. We will specifically work with two examples:
@@ -17,7 +17,7 @@ This tutorial explores two common examples of ecological spatial visualisation -
 The data we are working with come from two of my projects: a field course and my dissertation. The leaves dataset is my dissertation dataset (I collected a variety of leaf trait data to compare the differences between naturalised, native, and invasive tree species in Scotland). The bugs dataset is from the 4th year field course I attended this summer during which we collected insect diversity data from pitfall traps along different transects across forest edges. Both datasets contain a wide array of data, but for the purpose of this tutorial, we are mostly interested in the location data (the longitude and latitude columns) and the descriptors (e.g. the tree species or the transect ID). 
 
 ---------
-##Setting up for the tutorial
+## Setting up for the tutorial
 
 To begin, set up your working directory in your script and load the necessary libraries:
 ```r
@@ -49,7 +49,7 @@ bugs <- read.csv("Data/bugs.csv")
 ```
 
 ---------
-##Plotting locations of individual samples:
+## Plotting locations of individual samples:
 
 To plot where exactly each tree within our trees dataset is located, we need to clean up the data a bit first. The last command in this tidying chunk removes repeat longitude/latitude values (as I had multiple samples from the same trees; it makes for cleaner maps): 
 ```r
