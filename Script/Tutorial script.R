@@ -4,7 +4,6 @@
 #                               Zoja Manček Páli                              #
 #                                                                             #
 ##%#########################################################################%##
-#Making maps with google maps
 
 #WD
 setwd("~/") #erases previously set WDs
