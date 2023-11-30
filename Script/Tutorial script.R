@@ -13,7 +13,8 @@ getwd() #check that it's worked
 
 #Libraries
 library(ggmap)
-library(ggsn)
+library(ggspatial)
+library(sf)
 library(gridExtra)
 library(rmarkdown)
 library(tidyverse)
@@ -89,7 +90,11 @@ ggsave("rbge_initial_map.jpg", rbge_simple_map, path = "Plots", units = "cm",
           legend.background = element_rect(fill = "floralwhite")) +
     ggrepel::geom_label_repel(data = leaves, aes(x = long, y = lat, label = latin_name),
                               max.overlaps = 200, box.padding = 0.5, point.padding = 0.1, 
-                              segment.color = "floralwhite", size = 3, fontface = "italic"))
+                              segment.color = "floralwhite", size = 3, fontface = "italic") +
+    annotation_north_arrow(location = "tl", which_north = "true", 
+                           style = north_arrow_fancy_orienteering (text_col = 'floralwhite',
+                                                                   line_col = 'floralwhite',
+                                                                   fill = 'floralwhite')))
 ggsave("rbge_map_with_names.jpg", rbge_map_with_names, path = "Plots", units = "cm", 
        width = 30, height = 20)
 
@@ -107,10 +112,17 @@ ggsave("rbge_map_with_names.jpg", rbge_map_with_names, path = "Plots", units = "
     ggrepel::geom_label_repel(data = leaves, aes(x = long, y = lat, label = code),
                               max.overlaps = 200, box.padding = 0.5, 
                               point.padding = 0.1, segment.color = "floralwhite", 
-                              size = 3, fontface = "italic"))
+                              size = 3, fontface = "italic") +
+    annotation_north_arrow(location = "tl", which_north = "true", 
+                           style = north_arrow_fancy_orienteering (text_col = 'floralwhite',
+                                                                   line_col = 'floralwhite',
+                                                                   fill = 'floralwhite')))
 ggsave("map_with_codes.jpg", map_with_codes, path = "Plots", units = "cm", 
        width = 30, height = 20)
 
+(rbge_grid <- grid.arrange(rbge_map_with_names, map_with_codes, ncol = 2))
+ggsave("rbge_grid.jpg", rbge_grid, path = "Plots", units = "cm", width = 50,
+       height = 20)
 
 #Transect maps ----
 (badaguish <- map <- get_googlemap("Badaguish", zoom = 16))
@@ -119,14 +131,23 @@ badaguish_sites <- c(left = -3.730, bottom = 57.174, right = -3.70, top = 57.20)
 (badaguish_sattelite <- get_map(badaguish_sites, maptype = 'satellite', source = "google", 
                                zoom = 14))
 
-(transect_simple_map <- ggmap(badaguish_sattelite) +
-  geom_point(data = bugs, aes(x = long, y = lat, color = as.factor(site)), 
-             size = 3) +
-  scale_color_manual(values = c("#5EA8D9", "#CD6090", "#2CB82E", "#EEC900"),
-                     name = "Site")) #as you can see, the sites are quite far apart (so this is still a good figure)
+(transect_map <- ggmap(badaguish_sattelite) +
+    geom_point(data = bugs, aes(x = long, y = lat, color = as.factor(site)), 
+               size = 3) +
+    scale_color_manual(values = c("#5EA8D9", "#CD6090", "#2CB82E", "#EEC900"),
+                       name = "Site") +
+    xlab("Longitude") +
+    ylab("Latitude") +
+    theme(legend.position = c(0.9, 0.85),
+          legend.key = element_rect(fill = "floralwhite"),
+          legend.background = element_rect(fill = "floralwhite")) +
+    annotation_north_arrow(location = "tl", which_north = "true", 
+                           style = north_arrow_fancy_orienteering (text_col = 'floralwhite',
+                                                                   line_col = 'floralwhite',
+                                                                   fill = 'floralwhite'))) #as you can see, the sites are quite far apart (so this is still a good figure)
 #but lets make individual maps for each site, so we can see the environment of each transect
-ggsave("transect_simple.png", transect_simple_map, path = "Plots", units = "cm",
-       width = 30, height = 20)
+ggsave("transect_map.png", transect_map, path = "Plots", units = "cm", width = 30, height = 20)
+
 
 #Site 1
 site1_coords <- bugs %>% filter(site == "1")
@@ -137,12 +158,19 @@ site1 <- c(left = -3.730, bottom = 57.185, right = -3.745, top = 57.198) #set th
     geom_point(data = site1_coords, aes(x = long, y = lat, color = as.factor(transect)), size = 2) +
     geom_line(data = site1_coords, aes(x = long, y = lat, color = as.factor(transect)),
               linewidth = 1) +
-    annotate("text", x = -3.735, y = 57.193, label = "Site 1", color = "white", 
-             fontface = "bold") +
     scale_color_manual(values = c("A" = "#5EA8D9", "B" = "#5EA8D9")) +
-    labs(color = "Transects"))
-ggsave("site1.png", site1_map, path = "Plots", units = "cm",
-       width = 30, height = 20)
+    labs(color = "Transects (Site 1)") +
+    xlab("Longitude") +
+    ylab("Latitude") +
+    theme(legend.position = c(0.85, 0.9),
+          legend.key = element_rect(fill = "floralwhite"),
+          legend.background = element_rect(fill = "floralwhite")) +
+    annotation_north_arrow(location = "tl", which_north = "true", 
+                           style = north_arrow_fancy_orienteering (text_col = 'floralwhite',
+                                                                   line_col = 'floralwhite',
+                                                                   fill = 'floralwhite'))) 
+
+ggsave("site1.png", site1_map, path = "Plots", units = "cm", width = 30, height = 20)
 
 
 #Site 2
@@ -155,12 +183,19 @@ site2 <- c(left = -3.728, bottom = 57.184, right = -3.724, top = 57.1867) #set t
                size = 2) +
     geom_line(data = site2_coords, aes(x = long, y = lat, color = as.factor(transect)),
               linewidth = 1) +
-    annotate("text", x = -3.7235, y = 57.187, label = "Site 2", color = "white", 
-             fontface = "bold") +
     scale_color_manual(values = c("A" = "#CD6090", "B" = "#CD6090")) +
-    labs(color = "Transects"))
-ggsave("site2.png", site2_map, path = "Plots", units = "cm",
-       width = 30, height = 20)
+    labs(color = "Transects (Site 2)") +
+    xlab("Longitude") +
+    ylab("Latitude") +
+    theme(legend.position = c(0.85, 0.9),
+          legend.key = element_rect(fill = "floralwhite"),
+          legend.background = element_rect(fill = "floralwhite")) +
+    annotation_north_arrow(location = "tl", which_north = "true", 
+                           style = north_arrow_fancy_orienteering (text_col = 'floralwhite',
+                                                                   line_col = 'floralwhite',
+                                                                   fill = 'floralwhite')))
+
+ggsave("site2.png", site2_map, path = "Plots", units = "cm", width = 30, height = 20)
 
 
 #Site 3
@@ -173,15 +208,21 @@ site3 <- c(left = -3.72, bottom = 57.175, right = -3.70, top = 57.18) #set the m
                size = 2) +
     geom_line(data = site3_coords, aes(x = long, y = lat, color = as.factor(transect)),
               linewidth = 1) +
-    annotate("text", x = -3.7075, y = 57.179, label = "Site 3", color = "white", 
-             fontface = "bold") +
     scale_color_manual(values = c("A" = "#2CB82E", "B" = "#2CB82E")) +
-    labs(color = "Transects"))
-ggsave("site3.png", site3_map, path = "Plots", units = "cm",
-       width = 30, height = 20)
+    labs(color = "Transects (Site 3)") +
+    xlab("Longitude") +
+    ylab("Latitude") +
+    theme(legend.position = c(0.85, 0.90),
+          legend.key = element_rect(fill = "floralwhite"),
+          legend.background = element_rect(fill = "floralwhite")) +
+    annotation_north_arrow(location = "tl", which_north = "true", 
+                           style = north_arrow_fancy_orienteering (text_col = 'floralwhite',
+                                                                   line_col = 'floralwhite',
+                                                                   fill = 'floralwhite')))
+ggsave("site3.png", site3_map, path = "Plots", units = "cm", width = 30, height = 20)
 
 
-#Site 3
+#Site 4
 site4_coords <- bugs %>% filter(site == "4")
 site4 <- c(left = -3.71, bottom = 57.174, right = -3.70, top = 57.177) #set the map view window accordingly
 (site4_sattelite <- get_map(site4, maptype = 'satellite', source = "google", 
@@ -191,19 +232,23 @@ site4 <- c(left = -3.71, bottom = 57.174, right = -3.70, top = 57.177) #set the 
                size = 2) +
     geom_line(data = site4_coords, aes(x = long, y = lat, color = as.factor(transect)),
               linewidth = 1) +
-    annotate("text", x = -3.7025, y = 57.177, label = "Site 4", color = "white", 
-             fontface = "bold") +
     scale_color_manual(values = c("A" = "#EEC900", "B" = "#EEC900")) +
-    labs(color = "Transects"))
+    labs(color = "Transects (Site 4)") +
+    xlab("Longitude") +
+    ylab("Latitude") +
+    theme(legend.position = c(0.85, 0.9),
+          legend.key = element_rect(fill = "floralwhite"),
+          legend.background = element_rect(fill = "floralwhite")) +
+    annotation_north_arrow(location = "tl", which_north = "true", 
+                           style = north_arrow_fancy_orienteering (text_col = 'floralwhite',
+                                                                   line_col = 'floralwhite',
+                                                                   fill = 'floralwhite')))
 
-site4_map + ggsn::scalebar(worldUk, dist = 100, st.size = 3, 
-                           height=0.01, dd2km = TRUE, model = 'WGS84')
+ggsave("site4.png", site4_map, path = "Plots", units = "cm", width = 30, height = 20)
 
-ggsave("site4.png", site4_map, path = "Plots", units = "cm",
-       width = 30, height = 20)
-
+#Grid
 (sites_grid <- grid.arrange(site1_map, site2_map, site3_map, site4_map, ncol = 4))
-ggsave("sites_grid.png", sites_grid, path = "Plots", units = "cm", 
-       width = 50, height = 10)
+ggsave("sites_grid.png", sites_grid, path = "Plots", units = "cm", width = 70, height = 30)
+
 
 
