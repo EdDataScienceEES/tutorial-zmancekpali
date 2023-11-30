@@ -14,6 +14,7 @@ _____________
 - The licence for using this repository and the data within it can be found at: [licence](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/LICENSE)
 - The various Tutorial contents (including the data) can be found at:
     - [Instructions](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Additional%20files%20/Instructions%20and%20marking%20criteria.Rmd)
+    - [Data](https://github.com/EdDataScienceEES/tutorial-zmancekpali/tree/master/Data)
     - [Script](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Script/Tutorial%20script.R)
     - [Plots](https://github.com/EdDataScienceEES/tutorial-zmancekpali/tree/master/Plots)
     - [Final report](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Tutorial%20text.md)
