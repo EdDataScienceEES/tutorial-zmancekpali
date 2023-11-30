@@ -120,7 +120,11 @@ We can make this map more informative by adding the species names to each dot as
           legend.background = element_rect(fill = "floralwhite")) + #this adds a box under the legend with these colour specifications
     ggrepel::geom_label_repel(data = leaves, aes(x = long, y = lat, label = latin_name),
                               max.overlaps = 200, box.padding = 0.5, point.padding = 0.1, 
-                              segment.color = "floralwhite", size = 3, fontface = "italic")) #this adds a label to each individual dot
+                              segment.color = "floralwhite", size = 3, fontface = "italic") + #this adds a label to each individual dot
+    annotation_north_arrow(location = "tl", which_north = "true", 
+                           style = north_arrow_fancy_orienteering (text_col = 'floralwhite',
+                                                                   line_col = 'floralwhite',
+                                                                   fill = 'floralwhite'))) #adds a north arrow onto the plot
 ```
 ![labelled](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/map_with_names.jpg)
 
@@ -140,7 +144,11 @@ You can now see a much more informative plot that tells you the exact location o
     ggrepel::geom_label_repel(data = leaves, aes(x = long, y = lat, label = code),
                               max.overlaps = 200, box.padding = 0.5, 
                               point.padding = 0.1, segment.color = "floralwhite", 
-                              size = 3, fontface = "italic"))
+                              size = 3, fontface = "italic") +
+    annotation_north_arrow(location = "tl", which_north = "true", 
+                           style = north_arrow_fancy_orienteering (text_col = 'floralwhite',
+                                                                   line_col = 'floralwhite',
+                                                                   fill = 'floralwhite'))) #adds a north arrow onto the plot
 ```
 ![with codes instead](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/map_with_codes.jpg)
 
