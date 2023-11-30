@@ -126,7 +126,7 @@ We can make this map more informative by adding the species names to each dot as
                                                                    line_col = 'floralwhite',
                                                                    fill = 'floralwhite'))) #adds a north arrow onto the plot
 ```
-![labelled](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/map_with_names.jpg)
+![labelled](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/rbge_map_with_names.jpg)
 
 You can now see a much more informative plot that tells you the exact location of each tree and the species, however, it looks a bit cluttered. For the purposes of this tutorial, we can plot the species abbreviation code instead of the full Latin names to make the map a bit less cluttered with text (however, this would not really be usable in formal academic reports without a legend explaining each abbreviation). Still, we can see it looks much cleaner:
 ```

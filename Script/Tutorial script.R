@@ -247,8 +247,8 @@ site4 <- c(left = -3.71, bottom = 57.174, right = -3.70, top = 57.177) #set the 
 ggsave("site4.png", site4_map, path = "Plots", units = "cm", width = 30, height = 20)
 
 #Grid
-(sites_grid <- grid.arrange(site1_map, site2_map, site3_map, site4_map, ncol = 4))
-ggsave("sites_grid.png", sites_grid, path = "Plots", units = "cm", width = 70, height = 30)
+(sites_grid <- grid.arrange(site1_map, site2_map, site3_map, site4_map, ncol = 2))
+ggsave("sites_grid.png", sites_grid, path = "Plots", units = "cm", width = 50, height = 50)
 
 
 
