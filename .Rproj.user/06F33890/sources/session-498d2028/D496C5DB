@@ -1,0 +1,26 @@
+{
+    "id": "D496C5DB",
+    "path": "~/Tutorial DS/Script/Tutorial script.R",
+    "project_path": "Script/Tutorial script.R",
+    "type": "r_source",
+    "hash": "3585290662",
+    "contents": "",
+    "dirty": false,
+    "created": 1701290715065.0,
+    "source_on_save": false,
+    "relative_order": 5,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "6,0",
+        "scrollLine": "0"
+    },
+    "folds": "40|16|123|0|\n",
+    "lastKnownWriteTime": 1701384368,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1701384368546,
+    "read_only": false,
+    "read_only_alternatives": []
+}
