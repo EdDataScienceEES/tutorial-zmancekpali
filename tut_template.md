@@ -4,26 +4,22 @@
 ________________
 <left>## Visualising spatial data with ggplot and Google Maps
 
-#### Tutorial Aims
+#### Tutorial Aims and Background:
+The general aim of this tutorial is to learn how to use geographical location data and plot it using ggplot and Google Maps. The tutorial is aimed at someone who has some experience with using ggplot for data visualisation and the tidyverse for data manipulation. The three main aims of this tutorial are to learn how to plot different ecological geographical data on a Google Maps underlay. We will specifically work with two examples:
 
-#### <a href="#section1"> 1. The first section</a>
+1. [Plotting individual sample units]()
+2. [Plotting sampling locations](). 
 
-#### <a href="#section2"> 2. The second section</a>
+Visualising data in space is an important component of ecological and environmental analysis; knowing exactly where the sampling took place, and within what environments, is essential to appropriate interpretation of the trends - this is where __Google Maps__ comes in. Using Google Maps satellite images as an aid in the plots can help us contextualise our studies within their environments. 
 
-#### <a href="#section3"> 3. The third section</a>
+This tutorial explores two common examples of ecological spatial visualisation - plotting sample objects (e.g. individual trees) and study locations (e.g. sampling transects). We will use a combination of Google Maps and ggplot2 to create visually appealing and informative graphs. You can get all of the resources for this tutorial from [this repository](https://github.com/EdDataScienceEES/tutorial-zmancekpali). Clone and download the repo as a zip file, then unzip it.
 
+The data we are working with come from two of my projects: a field course and my dissertation. The leaves dataset is my dissertation dataset (I collected a variety of leaf trait data to compare the differences between naturalised, native, and invasive tree species in Scotland). The bugs dataset is from the 4th year field course I attended this summer during which we collected insect diversity data from pitfall traps along different transects across forest edges. Both datasets contain a wide array of data, but for the purpose of this tutorial, we are mostly interested in the location data (the longitude and latitude columns) and the descriptors (e.g. the tree species or the transect ID). 
 
-_________________
-Visualising data in space is an important component of ecological and environmental analysis.
-Knowing exactly where the sampling took place, and within what environments, is essential to appropriate interpretation of the trends - this is where __Google Maps__ comes in. Using Google Maps satellite images as an aid in the plots can help us contextualise our studies within their environments. 
+---------
+##Setting up for the tutorial
 
-This tutorial explores two common examples of ecological spatial visualisation - plotting sample objects (e.g. individual trees) and study locations (e.g. sampling transects). We will use a combination of Google Maps and ggplot2 to create visually appealing and informative graphs. You can get all of the resources for this tutorial from [this repository](https://github.com/EdDataScienceEES/tutorial-zmancekpali). Clone and download the repo as a zip file, then unzip it. 
-
-<a name="section1"></a>
-
-### 1. The set up:
-
-The begin, set up your working directory in your script and load the necessary libraries:
+To begin, set up your working directory in your script and load the necessary libraries:
 ```r
 #WD
 setwd("~/") #erases any previously set WDs
@@ -46,16 +42,14 @@ ggmap::register_google(key = "your key here", write = TRUE) #register your own G
 ```
 If you can't get your key to work for any reason, feel free to use mine to complete the tutorial.
 
-The data we are working with come from two of my projects: a field course and my dissertation. The leaves dataset is my dissertation dataset (I collected a variety of leaf trait data to compare the differences between naturalised, native, and invasive tree species in Scotland). The bugs dataset is from the 4th year field course I attended this summer during which we collected insect and plant diversity data along different transects across forest edges. Both datasets contain a wide array of data, but for the purpose of this tutorial, we are mostly interested in the location data (the longitude and latitude columns) and the descriptors (e.g. the tree species or the transect ID). 
-
 To complete the setup, import the two datasets like so: 
 ```r
 leaves <- read.csv("Data/traits_analysis.csv")
 bugs <- read.csv("Data/bugs.csv")
 ```
 
-
-### Plotting locations of individual samples
+---------
+##Plotting locations of individual samples:
 
 To plot where exactly each tree within our trees dataset is located, we need to clean up the data a bit first. The last command in this tidying chunk removes repeat longitude/latitude values (as I had multiple samples from the same trees; it makes for cleaner maps): 
 ```r
@@ -64,20 +58,17 @@ leaves <- leaves %>%
   mutate(type = recode(type, "Alien" = "Alien species",
                        "Invasive" = "Invasive species", 
                        "Naturalised" = "Naturalised species", 
-                       "Native" = "Native species")) %>%  #recode the invasion type names
+                       "Native" = "Native species")) %>%  #recode the invasion type names to be capitalised
   distinct(long, lat, .keep_all = TRUE) #remove multiple rows (avoids overplotting)
-
 ```
 
-We also need to let RStudio know where exactly we want to plot the data; in this case, all the samples were from the Royal Botanic Gardens Edinburgh, so we let R know that we want to plot Edinburgh and set the exact centre of the map to RBGE: 
+We also need to let RStudio know where exactly we want to plot the data; in this case, all the samples were from the Royal Botanic Gardens Edinburgh (RBGE), so we let R know that we want to plot Edinburgh and set the exact centre of the map to RBGE: 
 ```r
 (edinburgh <- map <- get_googlemap("edinburgh", zoom = 16))
-rbge <- c(left = -3.2140, bottom = 55.9627, right = -3.2025, top = 55.9682) #set the map view window accordingly; we want to view the RBGE
+rbge <- c(left = -3.2140, bottom = 55.9627, right = -3.2025, top = 55.9682) #set the map view window accordingly
 ```
 
-
-Now that we have a map of RBGE, we can select which type of map is best for our purposes from: terrain, roadmap, sattelite, or hybrid. To select which one you think is best, you can plot them all and select one: 
-
+Now that we have a map of RBGE, we can select which type of map is best for our purposes from: terrain, roadmap, sattelite, or hybrid. To select which one you think is best, you can plot them all and select a specific one: 
 ```r
 edi_map_terrain <- get_map(rbge, maptype='terrain', source="google", zoom=16) #specify what kind of map you want
 (terrain_map <- ggmap(edi_map_terrain) +
@@ -102,12 +93,11 @@ edi_map_hybrid <- get_map(rbge, maptype='hybrid', source="google", zoom=16)
     ylab("Latitude\n"))
 ```
 
-
 Here you can see them all side by side; for this study, I would most likely select satellite (bottom left) as it has the most realistic picture of the environment from which I collected my samples and is not cluttered with irrelevant text:
 ![map options](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/map_types_option.jpg)
 
 
-Now that we have the connection to Google Maps, the data, and the maps set up, we can finally plot the individual trees. To start, let's simply plot a dot for each tree:
+Now that we have the connection to Google Maps, the data, and the maps set up, we can plot the sampled trees. To start, let's simply plot a dot for each tree:
 ```
 (initial_simple_map <- ggmap(edi_map_satellite) +
     geom_point(data = leaves, aes(x = long, y = lat, color = type, shape = type), 
@@ -115,7 +105,7 @@ Now that we have the connection to Google Maps, the data, and the maps set up, w
 ```
 ![initial map](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/initial_map1.jpg)
 
-But we can make this look a lot more informative by adding the species names to each dot as a label:
+We can make this map more informative by adding the species names to each dot as a label:
 ```
 (map_with_names <- ggmap(edi_map_satellite) +
     geom_point(data = leaves, aes(x = long, y = lat, color = type, shape = type), 
@@ -125,17 +115,16 @@ But we can make this look a lot more informative by adding the species names to 
     scale_shape_manual(values = c(16, 17, 18, 15), name = "Invasion type") +
     xlab("Longitude") +
     ylab("Latitude") +
-    theme(legend.position = c(0.85, 0.87),
+    theme(legend.position = c(0.85, 0.87), #defines the position of the legend
           legend.key = element_rect(fill = "floralwhite"),
-          legend.background = element_rect(fill = "floralwhite")) +
+          legend.background = element_rect(fill = "floralwhite")) + #this adds a box under the legend with these colour specifications
     ggrepel::geom_label_repel(data = leaves, aes(x = long, y = lat, label = latin_name),
                               max.overlaps = 200, box.padding = 0.5, point.padding = 0.1, 
-                              segment.color = "floralwhite", size = 3, fontface = "italic"))
+                              segment.color = "floralwhite", size = 3, fontface = "italic")) #this adds a label to each individual dot
 ```
 ![labelled](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/map_with_names.jpg)
 
-
-We can also plot the species abbreviation code I used to make the map a bit less cluttered with text (however, this would not really be usable in formal academic reports without a legend explaining each abbreviation). Still, for the purpose of this tutorial, we can see it looks much cleaner:
+You can now see a much more informative plot that tells you the exact location of each tree and the species, however, it looks a bit cluttered. For the purposes of this tutorial, we can plot the species abbreviation code instead of the full Latin names to make the map a bit less cluttered with text (however, this would not really be usable in formal academic reports without a legend explaining each abbreviation). Still, we can see it looks much cleaner:
 ```
 (map_with_codes <- ggmap(edi_map_satellite) +
     geom_point(data = leaves, aes(x = long, y = lat, color = type, shape = type), 
@@ -155,9 +144,9 @@ We can also plot the species abbreviation code I used to make the map a bit less
 ```
 ![with codes instead](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/map_with_codes.jpg)
 
-
-### Plotting locations of transects
-For the second section, we can plot transect sites (a very common sampling method in ecology and environmental sciences). To do that, we will set the centre of the map to Badaguish, Scotland, as that's where the study sites were located. Set up your script like so and plot the data:
+---------
+## Plotting locations of transects:
+For the second section, we can plot transect sites (a very common sampling method in ecology and environmental sciences). To do that, we will set the centre of the map to Badaguish, Scotland, as that's where the study sites were located. Set up your script like so and create a simple plot of the data:
 
 ```r
 (badaguish <- map <- get_googlemap("Badaguish", zoom = 16))
@@ -174,7 +163,7 @@ badaguish_sites <- c(left = -3.730, bottom = 57.174, right = -3.70, top = 57.20)
 
 ![transect figure](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/transect_simple.png)
 
-We can now see the exact location of each of our transects and the sampling points along them. However, you want your figures to be more detailed in general, so let's instead plot a more detailed map for each site and make a grid of them (this way, we can see the exact habitat of our sampling sites):
+We can now see the exact location of each of our transects and the sampling points along them. However, you want your figures to be more detailed if you wanted to use them for a report, so let's instead plot a more detailed map for each site and make a grid of them (this way, we can see the exact habitat of our sampling sites). This next chunk of code filters out each of the four sites and plots them individually initially, and then arranges them in a grid using the ```grid.arrange()``` function. 
 
 ```r
 #Site 1
@@ -183,13 +172,23 @@ site1 <- c(left = -3.730, bottom = 57.185, right = -3.745, top = 57.198) #set th
 (site1_sattelite <- get_map(site1, maptype = 'satellite', source = "google", 
                                 zoom = 17))
 (site1_map <- ggmap(site1_sattelite) +
-    geom_point(data = site1_coords, aes(x = long, y = lat, color = as.factor(transect)), size = 2) +
+    geom_point(data = site1_coords, aes(x = long, y = lat, color = as.factor(transect)), size = 2) + #this line plots the dot for each sampling site (in this case, each pitfall trap)
     geom_line(data = site1_coords, aes(x = long, y = lat, color = as.factor(transect)),
-              linewidth = 1) +
-    annotate("text", x = -3.735, y = 57.193, label = "Site 1", color = "white", 
-             fontface = "bold") +
-    scale_color_manual(values = c("A" = "#5EA8D9", "B" = "#5EA8D9")) +
-    labs(color = "Transects"))
+              linewidth = 1) + #this plots a line between the pitfall traps at each transect (using as.factor(transect) allows R to distinguish between each transect and connect the dots that way, instead of connecting them all as it would if you omit this part of the call)
+    scale_color_manual(values = c("A" = "#5EA8D9", "B" = "#5EA8D9")) + #specify the colours of the transects
+    labs(color = "Transects (Site 1)") + #legend title
+    xlab("Longitude") +
+    ylab("Latitude") +
+    theme(legend.position = c(0.85, 0.9), #changes the position of the legend
+          legend.key = element_rect(fill = "floralwhite"), #adds a rectange under the legend
+          legend.background = element_rect(fill = "floralwhite")) +
+    annotation_north_arrow(location = "tl", which_north = "true", 
+                           style = north_arrow_fancy_orienteering (text_col = 'floralwhite',
+                                                                   line_col = 'floralwhite',
+                                                                   fill = 'floralwhite'))) #adds a north arrow onto the plot
+
+ggsave("site1.png", site1_map, path = "Plots", units = "cm", width = 30, height = 20) #you can save each of your plots like so if you wish.
+
 
 #Site 2
 site2_coords <- bugs %>% filter(site == "2")
@@ -201,10 +200,19 @@ site2 <- c(left = -3.728, bottom = 57.184, right = -3.724, top = 57.1867) #set t
                size = 2) +
     geom_line(data = site2_coords, aes(x = long, y = lat, color = as.factor(transect)),
               linewidth = 1) +
-    annotate("text", x = -3.7235, y = 57.187, label = "Site 2", color = "white", 
-             fontface = "bold") +
     scale_color_manual(values = c("A" = "#CD6090", "B" = "#CD6090")) +
-    labs(color = "Transects"))
+    labs(color = "Transects (Site 2)") +
+    xlab("Longitude") +
+    ylab("Latitude") +
+    theme(legend.position = c(0.85, 0.9),
+          legend.key = element_rect(fill = "floralwhite"),
+          legend.background = element_rect(fill = "floralwhite")) +
+    annotation_north_arrow(location = "tl", which_north = "true", 
+                           style = north_arrow_fancy_orienteering (text_col = 'floralwhite',
+                                                                   line_col = 'floralwhite',
+                                                                   fill = 'floralwhite')))
+
+ggsave("site2.png", site2_map, path = "Plots", units = "cm", width = 30, height = 20)
 
 
 #Site 3
@@ -217,12 +225,21 @@ site3 <- c(left = -3.72, bottom = 57.175, right = -3.70, top = 57.18) #set the m
                size = 2) +
     geom_line(data = site3_coords, aes(x = long, y = lat, color = as.factor(transect)),
               linewidth = 1) +
-    annotate("text", x = -3.7075, y = 57.179, label = "Site 3", color = "white", 
-             fontface = "bold") +
     scale_color_manual(values = c("A" = "#2CB82E", "B" = "#2CB82E")) +
-    labs(color = "Transects"))
+    labs(color = "Transects (Site 3)") +
+    xlab("Longitude") +
+    ylab("Latitude") +
+    theme(legend.position = c(0.85, 0.90),
+          legend.key = element_rect(fill = "floralwhite"),
+          legend.background = element_rect(fill = "floralwhite")) +
+    annotation_north_arrow(location = "tl", which_north = "true", 
+                           style = north_arrow_fancy_orienteering (text_col = 'floralwhite',
+                                                                   line_col = 'floralwhite',
+                                                                   fill = 'floralwhite')))
+ggsave("site3.png", site3_map, path = "Plots", units = "cm", width = 30, height = 20)
 
-#Site 3
+
+#Site 4
 site4_coords <- bugs %>% filter(site == "4")
 site4 <- c(left = -3.71, bottom = 57.174, right = -3.70, top = 57.177) #set the map view window accordingly
 (site4_sattelite <- get_map(site4, maptype = 'satellite', source = "google", 
@@ -232,70 +249,44 @@ site4 <- c(left = -3.71, bottom = 57.174, right = -3.70, top = 57.177) #set the 
                size = 2) +
     geom_line(data = site4_coords, aes(x = long, y = lat, color = as.factor(transect)),
               linewidth = 1) +
-    annotate("text", x = -3.7025, y = 57.177, label = "Site 4", color = "white", 
-             fontface = "bold") +
     scale_color_manual(values = c("A" = "#EEC900", "B" = "#EEC900")) +
-    labs(color = "Transects"))
+    labs(color = "Transects (Site 4)") +
+    xlab("Longitude") +
+    ylab("Latitude") +
+    theme(legend.position = c(0.85, 0.9),
+          legend.key = element_rect(fill = "floralwhite"),
+          legend.background = element_rect(fill = "floralwhite")) +
+    annotation_north_arrow(location = "tl", which_north = "true", 
+                           style = north_arrow_fancy_orienteering (text_col = 'floralwhite',
+                                                                   line_col = 'floralwhite',
+                                                                   fill = 'floralwhite')))
+
+ggsave("site4.png", site4_map, path = "Plots", units = "cm", width = 30, height = 20)
 ```
 
-![site1]()
-![site2]()
-![site3]()
-![site4]()
+![site1](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/site1.png)
+![site2](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/site2.png)
+![site3](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/site3.png)
+![site4](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/site4.png)
 
 
 You can now see each individual sample site much more zoomed in, and if you wish, you can even arrange a grid of all four plots and save it:
 
 ```r
+#Grid
 (sites_grid <- grid.arrange(site1_map, site2_map, site3_map, site4_map, ncol = 4))
-ggsave("sites_grid.png", sites_grid, path = "Plots", units = "cm", 
-       width = 50, height = 10)
+ggsave("sites_grid.png", sites_grid, path = "Plots", units = "cm", width = 70, height = 30)
 ```
 
-![grid]()
-
-Now you've produced five perfect maps that shows the habitat of your sampling site! To make the figures report-ready, you can even include a scale and a compas rose like so (e.g. on the RBGE map): 
-
-```r
-
-```
+![grid](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/sites_grid.png)
 
 
-<a name="section1"></a>
+## Finished!!
 
-## 3. The third section
+In this tutorial we learned: how to plot data onto an underlay of Google Maps with ggplot2 for two distinct and common ecological sampling methods
 
-More text, code and images.
-
-This is the end of the tutorial. Summarise what the student has learned, possibly even with a list of learning outcomes. In this tutorial we learned:
-
-##### - how to generate fake bivariate data
-##### - how to create a scatterplot in ggplot2
-##### - some of the different plot methods in ggplot2
-
-We can also provide some useful links, include a contact form and a way to send feedback.
-
-For more on `ggplot2`, read the official <a href="https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf" target="_blank">ggplot2 cheatsheet</a>.
-
-Everything below this is footer material - text and links that appears at the end of all of your tutorials.
-
-<hr>
-<hr>
-
-#### Check out our <a href="https://ourcodingclub.github.io/links/" target="_blank">Useful links</a> page where you can find loads of guides and cheatsheets.
-
-#### If you have any questions about completing this tutorial, please contact us on ourcodingclub@gmail.com
-
-#### <a href="INSERT_SURVEY_LINK" target="_blank">We would love to hear your feedback on the tutorial, whether you did it in the classroom or online!</a>
-
-<ul class="social-icons">
-	<li>
-		<h3>
-			<a href="https://twitter.com/our_codingclub" target="_blank">&nbsp;Follow our coding adventures on Twitter! <i class="fa fa-twitter"></i></a>
-		</h3>
-	</li>
-</ul>
+#### If you have any questions about completing this tutorial, please contact us on s2095338@gmail.com (Zoja Manček Páli)
 
 _____
-### References:
+## References:
 Google Maps (2023). Google Maps Logo. Available at: https://www.google.com/maps/@55.9503053,-3.1918862,14z?entry=ttu.
