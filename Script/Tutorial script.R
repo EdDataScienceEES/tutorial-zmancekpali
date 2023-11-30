@@ -14,9 +14,7 @@ getwd() #check that it's worked
 #Libraries
 library(ggmap)
 library(ggspatial)
-library(sf)
 library(gridExtra)
-library(rmarkdown)
 library(tidyverse)
 
 #Set up the google maps connection
@@ -117,6 +115,7 @@ ggsave("rbge_map_with_names.jpg", rbge_map_with_names, path = "Plots", units = "
                            style = north_arrow_fancy_orienteering (text_col = 'floralwhite',
                                                                    line_col = 'floralwhite',
                                                                    fill = 'floralwhite')))
+
 ggsave("map_with_codes.jpg", map_with_codes, path = "Plots", units = "cm", 
        width = 30, height = 20)
 
@@ -152,12 +151,10 @@ ggsave("transect_map.png", transect_map, path = "Plots", units = "cm", width = 3
 #Site 1
 site1_coords <- bugs %>% filter(site == "1")
 site1 <- c(left = -3.730, bottom = 57.185, right = -3.745, top = 57.198) #set the map view window accordingly
-(site1_sattelite <- get_map(site1, maptype = 'satellite', source = "google", 
-                                zoom = 17))
+(site1_sattelite <- get_map(site1, maptype = 'satellite', source = "google", zoom = 17))
 (site1_map <- ggmap(site1_sattelite) +
-    geom_point(data = site1_coords, aes(x = long, y = lat, color = as.factor(transect)), size = 2) +
-    geom_line(data = site1_coords, aes(x = long, y = lat, color = as.factor(transect)),
-              linewidth = 1) +
+    geom_point(data = site1_coords, aes(x = long, y = lat, color = as.factor(transect)), size = 5) +
+    geom_line(data = site1_coords, aes(x = long, y = lat, color = as.factor(transect)), linewidth = 2) +
     scale_color_manual(values = c("A" = "#5EA8D9", "B" = "#5EA8D9")) +
     labs(color = "Transects (Site 1)") +
     xlab("Longitude") +
@@ -176,13 +173,10 @@ ggsave("site1.png", site1_map, path = "Plots", units = "cm", width = 30, height 
 #Site 2
 site2_coords <- bugs %>% filter(site == "2")
 site2 <- c(left = -3.728, bottom = 57.184, right = -3.724, top = 57.1867) #set the map view window accordingly
-(site2_sattelite <- get_map(site2, maptype = 'satellite', source = "google", 
-                            zoom = 17))
+(site2_sattelite <- get_map(site2, maptype = 'satellite', source = "google", zoom = 17))
 (site2_map <- ggmap(site2_sattelite) +
-    geom_point(data = site2_coords, aes(x = long, y = lat, color = as.factor(transect)), 
-               size = 2) +
-    geom_line(data = site2_coords, aes(x = long, y = lat, color = as.factor(transect)),
-              linewidth = 1) +
+    geom_point(data = site2_coords, aes(x = long, y = lat, color = as.factor(transect)), size = 5) +
+    geom_line(data = site2_coords, aes(x = long, y = lat, color = as.factor(transect)), linewidth = 2) +
     scale_color_manual(values = c("A" = "#CD6090", "B" = "#CD6090")) +
     labs(color = "Transects (Site 2)") +
     xlab("Longitude") +
@@ -201,13 +195,11 @@ ggsave("site2.png", site2_map, path = "Plots", units = "cm", width = 30, height 
 #Site 3
 site3_coords <- bugs %>% filter(site == "3")
 site3 <- c(left = -3.72, bottom = 57.175, right = -3.70, top = 57.18) #set the map view window accordingly
-(site3_sattelite <- get_map(site3, maptype = 'satellite', source = "google", 
-                            zoom = 17))
+(site3_sattelite <- get_map(site3, maptype = 'satellite', source = "google", zoom = 17))
+
 (site3_map <- ggmap(site3_sattelite) +
-    geom_point(data = site3_coords, aes(x = long, y = lat, color = as.factor(transect)), 
-               size = 2) +
-    geom_line(data = site3_coords, aes(x = long, y = lat, color = as.factor(transect)),
-              linewidth = 1) +
+    geom_point(data = site3_coords, aes(x = long, y = lat, color = as.factor(transect)), size = 5) +
+    geom_line(data = site3_coords, aes(x = long, y = lat, color = as.factor(transect)), linewidth = 2) +
     scale_color_manual(values = c("A" = "#2CB82E", "B" = "#2CB82E")) +
     labs(color = "Transects (Site 3)") +
     xlab("Longitude") +
@@ -225,13 +217,11 @@ ggsave("site3.png", site3_map, path = "Plots", units = "cm", width = 30, height 
 #Site 4
 site4_coords <- bugs %>% filter(site == "4")
 site4 <- c(left = -3.71, bottom = 57.174, right = -3.70, top = 57.177) #set the map view window accordingly
-(site4_sattelite <- get_map(site4, maptype = 'satellite', source = "google", 
-                            zoom = 17))
+(site4_sattelite <- get_map(site4, maptype = 'satellite', source = "google", zoom = 17))
+
 (site4_map <- ggmap(site4_sattelite) +
-    geom_point(data = site4_coords, aes(x = long, y = lat, color = as.factor(transect)), 
-               size = 2) +
-    geom_line(data = site4_coords, aes(x = long, y = lat, color = as.factor(transect)),
-              linewidth = 1) +
+    geom_point(data = site4_coords, aes(x = long, y = lat, color = as.factor(transect)), size = 5) +
+    geom_line(data = site4_coords, aes(x = long, y = lat, color = as.factor(transect)), linewidth = 2) +
     scale_color_manual(values = c("A" = "#EEC900", "B" = "#EEC900")) +
     labs(color = "Transects (Site 4)") +
     xlab("Longitude") +

@@ -36,13 +36,13 @@ To be able to work through this tutorial, we need to enable a connection between
 
 1. Go to the [Credentials page of the Google Maps Platform](https://console.cloud.google.com/projectselector2/google/maps-apis/credentials?utm_source=Docs_CreateAPIKey&utm_content=Docs_maps-backend) and select "Create project". 
 2. Pick a name for it, and ignore the organisation ('No organisation' is fine for the purposes of this tutorial). 
-3. Press "Create" and copy the API key it provides you (e.g. mine is  AIzaSyDnersipSvcXuK4tCDbr8NOpa-qsrYf9pc), and add it into your script like so:
+3. Press "Create" and copy the API key it provides you, and add it into your script like so:
 ```r
 ggmap::register_google(key = "your key here", write = TRUE) #register your own Google API Key here
 ```
-If you can't get your key to work for any reason, feel free to use mine to complete the tutorial.
+If you can't get your key to work for any reason, feel free to use mine to complete the tutorial (AIzaSyDnersipSvcXuK4tCDbr8NOpa-qsrYf9pc).
 
-To complete the setup, import the two datasets like so: 
+To complete the setup, import the two datasets: 
 ```r
 leaves <- read.csv("Data/traits_analysis.csv")
 bugs <- read.csv("Data/bugs.csv")
@@ -51,7 +51,7 @@ bugs <- read.csv("Data/bugs.csv")
 ---------
 ## Plotting locations of individual samples:
 
-To plot where exactly each tree within our trees dataset is located, we need to clean up the data a bit first. The last command in this tidying chunk removes repeat longitude/latitude values (as I had multiple samples from the same trees; it makes for cleaner maps): 
+To plot where exactly each tree within our trees dataset is located, we need to clean up the data first. The last command in this tidying chunk removes repeat longitude/latitude values (as I had multiple samples from the same trees; it makes for cleaner maps): 
 ```r
 leaves <- leaves %>% 
   select("type", "code", "latin_name", "long", "lat") %>%  #select the relevant columns
@@ -128,7 +128,7 @@ We can make this map more informative by adding the species names to each dot as
 ```
 ![labelled](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/rbge_map_with_names.jpg)
 
-You can now see a much more informative plot that tells you the exact location of each tree and the species, however, it looks a bit cluttered. For the purposes of this tutorial, we can plot the species abbreviation code instead of the full Latin names to make the map a bit less cluttered with text (however, this would not really be usable in formal academic reports without a legend explaining each abbreviation). Still, we can see it looks much cleaner:
+You can now see a much more informative plot that tells you the exact location of each tree and the species, however, it looks a bit cluttered. For the purposes of this tutorial, we can plot the species abbreviation code instead of the full Latin names to make the map a bit less cluttered with text (however, this would not really be usable in formal academic reports without a legend explaining each abbreviation). Still, we can see it looks much cleaner (and comparing it with the top map, you can distinguish what each abbreviation means):
 ```
 (map_with_codes <- ggmap(edi_map_satellite) +
     geom_point(data = leaves, aes(x = long, y = lat, color = type, shape = type), 
@@ -154,19 +154,21 @@ You can now see a much more informative plot that tells you the exact location o
 
 ---------
 ## Plotting locations of transects:
-For the second section, we can plot transect sites (a very common sampling method in ecology and environmental sciences). To do that, we will set the centre of the map to Badaguish, Scotland, as that's where the study sites were located. Set up your script like so and create a simple plot of the data:
+For the second section, we can plot transect sites (a very common sampling method in ecology and environmental sciences). To do that, we will use the bugs dataset and set the centre of the map to Badaguish, Scotland, where the study sites were located. Set up your script like so and create a simple plot of the data:
 
 ```r
+bugs <- bugs %>% 
+  select("site", "transect", "long", "lat", "quad", "Id") %>%  #select the relevant columns
+  distinct(long, lat, .keep_all = TRUE) #remove multiple rows (avoids overplotting)
+
 (badaguish <- map <- get_googlemap("Badaguish", zoom = 16))
 badaguish_sites <- c(left = -3.730, bottom = 57.174, right = -3.70, top = 57.20)
 
 (badaguish_sattelite <- get_map(badaguish_sites, maptype = 'satellite', source = "google", zoom = 14))
 
 (transect_simple_map <- ggmap(badaguish_sattelite) +
-  geom_point(data = bugs, aes(x = long, y = lat, color = as.factor(site)), 
-             size = 3) +
-  scale_color_manual(values = c("#5EA8D9", "#CD6090", "#2CB82E", "#EEC900"),
-                     name = "Site")) 
+  geom_point(data = bugs, aes(x = long, y = lat, color = as.factor(site)), size = 3) +
+  scale_color_manual(values = c("#5EA8D9", "#CD6090", "#2CB82E", "#EEC900"), name = "Site")) 
 ```
 
 ![transect figure](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/transect_simple.png)
@@ -177,8 +179,8 @@ We can now see the exact location of each of our transects and the sampling poin
 #Site 1
 site1_coords <- bugs %>% filter(site == "1")
 site1 <- c(left = -3.730, bottom = 57.185, right = -3.745, top = 57.198) #set the map view window accordingly
-(site1_sattelite <- get_map(site1, maptype = 'satellite', source = "google", 
-                                zoom = 17))
+(site1_sattelite <- get_map(site1, maptype = 'satellite', source = "google", zoom = 17))
+
 (site1_map <- ggmap(site1_sattelite) +
     geom_point(data = site1_coords, aes(x = long, y = lat, color = as.factor(transect)), size = 2) + #this line plots the dot for each sampling site (in this case, each pitfall trap)
     geom_line(data = site1_coords, aes(x = long, y = lat, color = as.factor(transect)),
@@ -201,13 +203,11 @@ ggsave("site1.png", site1_map, path = "Plots", units = "cm", width = 30, height 
 #Site 2
 site2_coords <- bugs %>% filter(site == "2")
 site2 <- c(left = -3.728, bottom = 57.184, right = -3.724, top = 57.1867) #set the map view window accordingly
-(site2_sattelite <- get_map(site2, maptype = 'satellite', source = "google", 
-                            zoom = 17))
+(site2_sattelite <- get_map(site2, maptype = 'satellite', source = "google", zoom = 17))
+
 (site2_map <- ggmap(site2_sattelite) +
-    geom_point(data = site2_coords, aes(x = long, y = lat, color = as.factor(transect)), 
-               size = 2) +
-    geom_line(data = site2_coords, aes(x = long, y = lat, color = as.factor(transect)),
-              linewidth = 1) +
+    geom_point(data = site2_coords, aes(x = long, y = lat, color = as.factor(transect)), size = 2) +
+    geom_line(data = site2_coords, aes(x = long, y = lat, color = as.factor(transect)), linewidth = 1) +
     scale_color_manual(values = c("A" = "#CD6090", "B" = "#CD6090")) +
     labs(color = "Transects (Site 2)") +
     xlab("Longitude") +
@@ -226,13 +226,11 @@ ggsave("site2.png", site2_map, path = "Plots", units = "cm", width = 30, height 
 #Site 3
 site3_coords <- bugs %>% filter(site == "3")
 site3 <- c(left = -3.72, bottom = 57.175, right = -3.70, top = 57.18) #set the map view window accordingly
-(site3_sattelite <- get_map(site3, maptype = 'satellite', source = "google", 
-                            zoom = 17))
+(site3_sattelite <- get_map(site3, maptype = 'satellite', source = "google", zoom = 17))
+
 (site3_map <- ggmap(site3_sattelite) +
-    geom_point(data = site3_coords, aes(x = long, y = lat, color = as.factor(transect)), 
-               size = 2) +
-    geom_line(data = site3_coords, aes(x = long, y = lat, color = as.factor(transect)),
-              linewidth = 1) +
+    geom_point(data = site3_coords, aes(x = long, y = lat, color = as.factor(transect)), size = 2) +
+    geom_line(data = site3_coords, aes(x = long, y = lat, color = as.factor(transect)), linewidth = 1) +
     scale_color_manual(values = c("A" = "#2CB82E", "B" = "#2CB82E")) +
     labs(color = "Transects (Site 3)") +
     xlab("Longitude") +
@@ -250,13 +248,11 @@ ggsave("site3.png", site3_map, path = "Plots", units = "cm", width = 30, height 
 #Site 4
 site4_coords <- bugs %>% filter(site == "4")
 site4 <- c(left = -3.71, bottom = 57.174, right = -3.70, top = 57.177) #set the map view window accordingly
-(site4_sattelite <- get_map(site4, maptype = 'satellite', source = "google", 
-                            zoom = 17))
+(site4_sattelite <- get_map(site4, maptype = 'satellite', source = "google", zoom = 17))
+
 (site4_map <- ggmap(site4_sattelite) +
-    geom_point(data = site4_coords, aes(x = long, y = lat, color = as.factor(transect)), 
-               size = 2) +
-    geom_line(data = site4_coords, aes(x = long, y = lat, color = as.factor(transect)),
-              linewidth = 1) +
+    geom_point(data = site4_coords, aes(x = long, y = lat, color = as.factor(transect)), size = 2) +
+    geom_line(data = site4_coords, aes(x = long, y = lat, color = as.factor(transect)), linewidth = 1) +
     scale_color_manual(values = c("A" = "#EEC900", "B" = "#EEC900")) +
     labs(color = "Transects (Site 4)") +
     xlab("Longitude") +
@@ -293,8 +289,20 @@ ggsave("sites_grid.png", sites_grid, path = "Plots", units = "cm", width = 70, h
 
 In this tutorial we learned: how to plot data onto an underlay of Google Maps with ggplot2 for two distinct and common ecological sampling methods
 
-#### If you have any questions about completing this tutorial, please contact us on s2095338@gmail.com (Zoja Manček Páli)
+#### If you have any questions about completing this tutorial, please contact me (Zoja Manček Páli) on s2095338@gmail.com.
 
 _____
 ## References:
-Google Maps (2023). Google Maps Logo. Available at: https://www.google.com/maps/@55.9503053,-3.1918862,14z?entry=ttu.
+
+Auguie, B. (2017). _gridExtra: Miscellaneous Functions for "Grid" Graphics_. R package
+  version 2.3, <https://CRAN.R-project.org/package=gridExtra>.
+
+Dunnington, D. (2023). _ggspatial: Spatial Data Framework for ggplot2_. R package version
+  1.1.9, <https://CRAN.R-project.org/package=ggspatial>.
+  
+Kahle, D., and Wickham., M. (2013) _ggmap: Spatial Visualization with ggplot2_. The R Journal, 5(1),
+  144-161.<http://journal.r-project.org/archive/2013-1/kahle-wickham.pdf>
+
+Google Maps (2023). _Google Maps Logo_. Available at: <https://www.google.com/maps/@55.9503053,-3.1918862,14z?entry=ttu>.
+
+Wickham, H., Averick, M., Bryan, J., Chang, W., McGowan, L. D., François, R., Grolemund, G., Hayes, A., Henry, L., Hester, J., Kuhn, M., Pedersen, T. L., Miller, E., Bache, S. M., Müller, K., Ooms, J., Robinson, D., Seidel, D. P., Spinu, V., Takahashi, K., Vaughan, D., Wilke, C., Woo, K., Yutani, H. (2019). “Welcome to the tidyverse.” _Journal of Open Source Software_, 4(43), 1686. <https://doi.org/10.21105/joss.01686>.
