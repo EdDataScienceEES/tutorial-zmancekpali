@@ -7,8 +7,8 @@ ________________
 #### Tutorial Aims and Background:
 The general aim of this tutorial is to learn how to use geographical location data and plot it using ggplot and Google Maps. The tutorial is aimed at someone who has some experience with using ggplot for data visualisation and the tidyverse for data manipulation. The three main aims of this tutorial are to learn how to plot different ecological geographical data on a Google Maps underlay. We will specifically work with two examples:
 
-1. [Plotting individual sample units]()
-2. [Plotting sampling locations](). 
+1. Plotting individual sample units
+2. Plotting sampling locations.
 
 Visualising data in space is an important component of ecological and environmental analysis; knowing exactly where the sampling took place, and within what environments, is essential to appropriate interpretation of the trends - this is where __Google Maps__ comes in. Using Google Maps satellite images as an aid in the plots can help us contextualise our studies within their environments. 
 
@@ -70,24 +70,24 @@ rbge <- c(left = -3.2140, bottom = 55.9627, right = -3.2025, top = 55.9682) #set
 
 Now that we have a map of RBGE, we can select which type of map is best for our purposes from: terrain, roadmap, sattelite, or hybrid. To select which one you think is best, you can plot them all and select a specific one: 
 ```r
-edi_map_terrain <- get_map(rbge, maptype='terrain', source="google", zoom=16) #specify what kind of map you want
+edi_map_terrain <- get_map(rbge, maptype ='terrain', source="google", zoom=16) #specify what kind of map you want
 (terrain_map <- ggmap(edi_map_terrain) +
     xlab("Longitude") +
     ylab("Latitude\n") +
     annotate("text", x = -3.214, y = 55.968, colour = "black", label = "a)", size = 4.5, 
              fontface = "bold"))
 
-edi_map_roadmap <- get_map(rbge, maptype='roadmap', source="google", zoom=16) 
+edi_map_roadmap <- get_map(rbge, maptype ='roadmap', source = "google", zoom = 16) #specify what kind of map you want
 (roadmap <- ggmap(edi_map_roadmap) +
   xlab("Longitude") +
   ylab("Latitude\n"))
   
-edi_map_satellite <- get_map(rbge, maptype='satellite', source="google", zoom=16) 
+edi_map_satellite <- get_map(rbge, maptype ='satellite', source = "google", zoom = 16) #specify what kind of map you want
 (satellite_map <- ggmap(edi_map_satellite) +
     xlab("Longitude") +
     ylab("Latitude\n"))
 
-edi_map_hybrid <- get_map(rbge, maptype='hybrid', source="google", zoom=16)
+edi_map_hybrid <- get_map(rbge, maptype = 'hybrid', source = "google", zoom = 16) #specify what kind of map you want
 (hybrid_map <- ggmap(edi_map_hybrid) +
     xlab("Longitude") +
     ylab("Latitude\n"))
@@ -99,7 +99,7 @@ Here you can see them all side by side; for this study, I would most likely sele
 
 Now that we have the connection to Google Maps, the data, and the maps set up, we can plot the sampled trees. To start, let's simply plot a dot for each tree:
 ```
-(initial_simple_map <- ggmap(edi_map_satellite) +
+(rbge_simple_map <- ggmap(edi_map_satellite) +
     geom_point(data = leaves, aes(x = long, y = lat, color = type, shape = type), 
                size = 3))
 ```
@@ -107,34 +107,30 @@ Now that we have the connection to Google Maps, the data, and the maps set up, w
 
 We can make this map more informative by adding the species names to each dot as a label:
 ```
-(map_with_names <- ggmap(edi_map_satellite) +
-    geom_point(data = leaves, aes(x = long, y = lat, color = type, shape = type), 
-               size = 3) +
-    scale_color_manual(values = c("#5EA8D9", "#CD6090", "#698B69", "#EEC900"),
-                       name = "Invasion type") +
+(rbge_map_with_names <- ggmap(edi_map_satellite) +
+    geom_point(data = leaves, aes(x = long, y = lat, color = type, shape = type), size = 3) +
+    scale_color_manual(values = c("#5EA8D9", "#CD6090", "#2CB82E", "#EEC900"), name = "Invasion type") +
     scale_shape_manual(values = c(16, 17, 18, 15), name = "Invasion type") +
     xlab("Longitude") +
     ylab("Latitude") +
-    theme(legend.position = c(0.85, 0.87), #defines the position of the legend
+    theme(legend.position = c(0.85, 0.87), #sets the legend position
           legend.key = element_rect(fill = "floralwhite"),
-          legend.background = element_rect(fill = "floralwhite")) + #this adds a box under the legend with these colour specifications
+          legend.background = element_rect(fill = "floralwhite")) + #adds a floralwhite rectangle under the legend
     ggrepel::geom_label_repel(data = leaves, aes(x = long, y = lat, label = latin_name),
                               max.overlaps = 200, box.padding = 0.5, point.padding = 0.1, 
-                              segment.color = "floralwhite", size = 3, fontface = "italic") + #this adds a label to each individual dot
+                              segment.color = "floralwhite", size = 3, fontface = "italic") + #labels for each dot
     annotation_north_arrow(location = "tl", which_north = "true", 
                            style = north_arrow_fancy_orienteering (text_col = 'floralwhite',
                                                                    line_col = 'floralwhite',
-                                                                   fill = 'floralwhite'))) #adds a north arrow onto the plot
+                                                                   fill = 'floralwhite'))) #adds a north arrow to the plot
 ```
 ![labelled](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/rbge_map_with_names.jpg)
 
 You can now see a much more informative plot that tells you the exact location of each tree and the species, however, it looks a bit cluttered. For the purposes of this tutorial, we can plot the species abbreviation code instead of the full Latin names to make the map a bit less cluttered with text (however, this would not really be usable in formal academic reports without a legend explaining each abbreviation). Still, we can see it looks much cleaner (and comparing it with the top map, you can distinguish what each abbreviation means):
 ```
 (map_with_codes <- ggmap(edi_map_satellite) +
-    geom_point(data = leaves, aes(x = long, y = lat, color = type, shape = type), 
-               size = 3) +
-    scale_color_manual(values = c("#5EA8D9", "#CD6090", "#698B69", "#EEC900"),
-                       name = "Invasion type") +
+    geom_point(data = leaves, aes(x = long, y = lat, color = type, shape = type), size = 3) +
+    scale_color_manual(values = c("#5EA8D9", "#CD6090", "#698B69", "#EEC900"), name = "Invasion type") +
     scale_shape_manual(values = c(16, 17, 18, 15), name = "Invasion type") +
     xlab("Longitude") +
     ylab("Latitude") +
@@ -148,7 +144,7 @@ You can now see a much more informative plot that tells you the exact location o
     annotation_north_arrow(location = "tl", which_north = "true", 
                            style = north_arrow_fancy_orienteering (text_col = 'floralwhite',
                                                                    line_col = 'floralwhite',
-                                                                   fill = 'floralwhite'))) #adds a north arrow onto the plot
+                                                                   fill = 'floralwhite')))
 ```
 ![with codes instead](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/map_with_codes.jpg)
 
@@ -162,13 +158,24 @@ bugs <- bugs %>%
   distinct(long, lat, .keep_all = TRUE) #remove multiple rows (avoids overplotting)
 
 (badaguish <- map <- get_googlemap("Badaguish", zoom = 16))
-badaguish_sites <- c(left = -3.730, bottom = 57.174, right = -3.70, top = 57.20)
+badaguish_sites <- c(left = -3.730, bottom = 57.174, right = -3.70, top = 57.20) #set the map view window accordingly
 
 (badaguish_sattelite <- get_map(badaguish_sites, maptype = 'satellite', source = "google", zoom = 14))
 
-(transect_simple_map <- ggmap(badaguish_sattelite) +
-  geom_point(data = bugs, aes(x = long, y = lat, color = as.factor(site)), size = 3) +
-  scale_color_manual(values = c("#5EA8D9", "#CD6090", "#2CB82E", "#EEC900"), name = "Site")) 
+(transect_map <- ggmap(badaguish_sattelite) +
+    geom_point(data = bugs, aes(x = long, y = lat, color = as.factor(site)), size = 3) +
+    scale_color_manual(values = c("#5EA8D9", "#CD6090", "#2CB82E", "#EEC900"), name = "Site") +
+    xlab("Longitude") +
+    ylab("Latitude") +
+    theme(legend.position = c(0.9, 0.85),
+          legend.key = element_rect(fill = "floralwhite"),
+          legend.background = element_rect(fill = "floralwhite")) +
+    annotation_north_arrow(location = "tl", which_north = "true", 
+                           style = north_arrow_fancy_orienteering (text_col = 'floralwhite',
+                                                                   line_col = 'floralwhite',
+                                                                   fill = 'floralwhite')))
+#as we can see, the sites are quite far apart
+
 ```
 
 ![transect figure](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/transect_simple.png)
@@ -182,9 +189,8 @@ site1 <- c(left = -3.730, bottom = 57.185, right = -3.745, top = 57.198) #set th
 (site1_sattelite <- get_map(site1, maptype = 'satellite', source = "google", zoom = 17))
 
 (site1_map <- ggmap(site1_sattelite) +
-    geom_point(data = site1_coords, aes(x = long, y = lat, color = as.factor(transect)), size = 2) + #this line plots the dot for each sampling site (in this case, each pitfall trap)
-    geom_line(data = site1_coords, aes(x = long, y = lat, color = as.factor(transect)),
-              linewidth = 1) + #this plots a line between the pitfall traps at each transect (using as.factor(transect) allows R to distinguish between each transect and connect the dots that way, instead of connecting them all as it would if you omit this part of the call)
+    geom_point(data = site1_coords, aes(x = long, y = lat, color = as.factor(transect)), size = 5) + #this line plots the dot for each sampling site (in this case, each pitfall trap)
+    geom_line(data = site1_coords, aes(x = long, y = lat, color = as.factor(transect)), linewidth = 2) + #this plots a line between the pitfall traps at each transect (using as.factor(transect) allows R to distinguish between each transect and connect the dots that way, instead of connecting them all as it would if you omit this part of the call)
     scale_color_manual(values = c("A" = "#5EA8D9", "B" = "#5EA8D9")) + #specify the colours of the transects
     labs(color = "Transects (Site 1)") + #legend title
     xlab("Longitude") +
@@ -206,8 +212,8 @@ site2 <- c(left = -3.728, bottom = 57.184, right = -3.724, top = 57.1867) #set t
 (site2_sattelite <- get_map(site2, maptype = 'satellite', source = "google", zoom = 17))
 
 (site2_map <- ggmap(site2_sattelite) +
-    geom_point(data = site2_coords, aes(x = long, y = lat, color = as.factor(transect)), size = 2) +
-    geom_line(data = site2_coords, aes(x = long, y = lat, color = as.factor(transect)), linewidth = 1) +
+    geom_point(data = site2_coords, aes(x = long, y = lat, color = as.factor(transect)), size = 5) +
+    geom_line(data = site2_coords, aes(x = long, y = lat, color = as.factor(transect)), linewidth = 2) +
     scale_color_manual(values = c("A" = "#CD6090", "B" = "#CD6090")) +
     labs(color = "Transects (Site 2)") +
     xlab("Longitude") +
@@ -229,8 +235,8 @@ site3 <- c(left = -3.72, bottom = 57.175, right = -3.70, top = 57.18) #set the m
 (site3_sattelite <- get_map(site3, maptype = 'satellite', source = "google", zoom = 17))
 
 (site3_map <- ggmap(site3_sattelite) +
-    geom_point(data = site3_coords, aes(x = long, y = lat, color = as.factor(transect)), size = 2) +
-    geom_line(data = site3_coords, aes(x = long, y = lat, color = as.factor(transect)), linewidth = 1) +
+    geom_point(data = site3_coords, aes(x = long, y = lat, color = as.factor(transect)), size = 5) +
+    geom_line(data = site3_coords, aes(x = long, y = lat, color = as.factor(transect)), linewidth = 2) +
     scale_color_manual(values = c("A" = "#2CB82E", "B" = "#2CB82E")) +
     labs(color = "Transects (Site 3)") +
     xlab("Longitude") +
@@ -242,6 +248,7 @@ site3 <- c(left = -3.72, bottom = 57.175, right = -3.70, top = 57.18) #set the m
                            style = north_arrow_fancy_orienteering (text_col = 'floralwhite',
                                                                    line_col = 'floralwhite',
                                                                    fill = 'floralwhite')))
+
 ggsave("site3.png", site3_map, path = "Plots", units = "cm", width = 30, height = 20)
 
 
@@ -251,8 +258,8 @@ site4 <- c(left = -3.71, bottom = 57.174, right = -3.70, top = 57.177) #set the 
 (site4_sattelite <- get_map(site4, maptype = 'satellite', source = "google", zoom = 17))
 
 (site4_map <- ggmap(site4_sattelite) +
-    geom_point(data = site4_coords, aes(x = long, y = lat, color = as.factor(transect)), size = 2) +
-    geom_line(data = site4_coords, aes(x = long, y = lat, color = as.factor(transect)), linewidth = 1) +
+    geom_point(data = site4_coords, aes(x = long, y = lat, color = as.factor(transect)), size = 5) +
+    geom_line(data = site4_coords, aes(x = long, y = lat, color = as.factor(transect)), linewidth = 2) +
     scale_color_manual(values = c("A" = "#EEC900", "B" = "#EEC900")) +
     labs(color = "Transects (Site 4)") +
     xlab("Longitude") +
