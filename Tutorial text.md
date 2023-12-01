@@ -7,8 +7,8 @@ ________________
 #### Tutorial Aims and Background:
 The general aim of this tutorial is to learn how to use geographical location data and plot it using ggplot and Google Maps. The tutorial is aimed at someone who has some experience with using ggplot for data visualisation and the tidyverse for data manipulation. The three main aims of this tutorial are to learn how to plot different ecological geographical data on a Google Maps underlay. We will specifically work with two examples:
 
-1. [Plotting individual sample units]()
-2. [Plotting sampling locations](). 
+1. Plotting individual sample units and
+2. Plotting sampling locations.
 
 Visualising data in space is an important component of ecological and environmental analysis; knowing exactly where the sampling took place, and within what environments, is essential to appropriate interpretation of the trends - this is where __Google Maps__ comes in. Using Google Maps satellite images as an aid in the plots can help us contextualise our studies within their environments. 
 
