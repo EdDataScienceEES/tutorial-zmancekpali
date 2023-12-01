@@ -8,6 +8,9 @@ Due date: December 4th, noon (after extension)
 
 Image credit: Google Maps
 
+**Please note that I have shared my repo with @hananafiqah02 for feedback, and I've also given her some feedback on her repository as well**
+
+
 _____________
 ## Repository organisation and rules:
 **Repository layout:**
