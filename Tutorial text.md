@@ -1,3 +1,8 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
 ![Image credit: Google Maps](https://cdn.arstechnica.net/wp-content/uploads/2023/09/Google-Maps-640x361.jpg)
 
 
@@ -19,6 +24,7 @@ The data we are working with come from two of my projects: a field course and my
 ---------
 ## Setting up for the tutorial
 
+
 To begin, set up your working directory in your script and load the necessary libraries:
 ```r
 #WD
@@ -32,7 +38,9 @@ library(gridExtra)
 library(tidyverse)
 ```
 
+
 To be able to work through this tutorial, we need to enable a connection between RStudio and Google Maps - and we can do that using an API key (application programming interface; basically allows a connection of an app and the identification of a user on that app). To create your own API key, follow these steps: 
+
 
 1. Go to the [Credentials page of the Google Maps Platform](https://console.cloud.google.com/projectselector2/google/maps-apis/credentials?utm_source=Docs_CreateAPIKey&utm_content=Docs_maps-backend) and select "Create project". 
 2. Pick a name for it, and ignore the organisation ('No organisation' is fine for the purposes of this tutorial). 
@@ -47,6 +55,8 @@ To complete the setup, import the two datasets:
 leaves <- read.csv("Data/traits_analysis.csv")
 bugs <- read.csv("Data/bugs.csv")
 ```
+
+
 
 ---------
 ## Plotting locations of individual samples:

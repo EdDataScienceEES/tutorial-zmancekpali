@@ -1,3 +1,8 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
 ![Image credit: Google Maps](https://cdn.arstechnica.net/wp-content/uploads/2023/09/Google-Maps-640x361.jpg)
 
 
@@ -7,8 +12,8 @@ ________________
 #### Tutorial Aims and Background:
 The general aim of this tutorial is to learn how to use geographical location data and plot it using ggplot and Google Maps. The tutorial is aimed at someone who has some experience with using ggplot for data visualisation and the tidyverse for data manipulation. The three main aims of this tutorial are to learn how to plot different ecological geographical data on a Google Maps underlay. We will specifically work with two examples:
 
-1. [Plotting individual sample units]()
-2. [Plotting sampling locations](). 
+1. Plotting individual sample units and
+2. Plotting sampling locations.
 
 Visualising data in space is an important component of ecological and environmental analysis; knowing exactly where the sampling took place, and within what environments, is essential to appropriate interpretation of the trends - this is where __Google Maps__ comes in. Using Google Maps satellite images as an aid in the plots can help us contextualise our studies within their environments. 
 
@@ -18,6 +23,7 @@ The data we are working with come from two of my projects: a field course and my
 
 ---------
 ## Setting up for the tutorial
+
 
 To begin, set up your working directory in your script and load the necessary libraries:
 ```r
@@ -32,7 +38,9 @@ library(gridExtra)
 library(tidyverse)
 ```
 
+
 To be able to work through this tutorial, we need to enable a connection between RStudio and Google Maps - and we can do that using an API key (application programming interface; basically allows a connection of an app and the identification of a user on that app). To create your own API key, follow these steps: 
+
 
 1. Go to the [Credentials page of the Google Maps Platform](https://console.cloud.google.com/projectselector2/google/maps-apis/credentials?utm_source=Docs_CreateAPIKey&utm_content=Docs_maps-backend) and select "Create project". 
 2. Pick a name for it, and ignore the organisation ('No organisation' is fine for the purposes of this tutorial). 
@@ -47,6 +55,8 @@ To complete the setup, import the two datasets:
 leaves <- read.csv("Data/traits_analysis.csv")
 bugs <- read.csv("Data/bugs.csv")
 ```
+
+
 
 ---------
 ## Plotting locations of individual samples:
