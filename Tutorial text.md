@@ -1,8 +1,4 @@
 ---
-output:
-  pdf_document: default
-  html_document: default
----
 ![Image credit: Google Maps](https://cdn.arstechnica.net/wp-content/uploads/2023/09/Google-Maps-640x361.jpg)
 
 
@@ -104,7 +100,9 @@ edi_map_hybrid <- get_map(rbge, maptype='hybrid', source="google", zoom=16)
 ```
 
 Here you can see them all side by side; for this study, I would most likely select satellite (bottom left) as it has the most realistic picture of the environment from which I collected my samples and is not cluttered with irrelevant text:
+[[/Plots/map_types_option.jpg]]
 ![map options](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/map_types_option.jpg)
+[[/images/path/to/image.ext|ALT TEXT]]
 
 
 Now that we have the connection to Google Maps, the data, and the maps set up, we can plot the sampled trees. To start, let's simply plot a dot for each tree:
