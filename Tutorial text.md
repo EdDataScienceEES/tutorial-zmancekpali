@@ -102,17 +102,16 @@ edi_map_hybrid <- get_map(rbge, maptype='hybrid', source="google", zoom=16)
 Here you can see them all side by side; for this study, I would most likely select satellite (bottom left) as it has the most realistic picture of the environment from which I collected my samples and is not cluttered with irrelevant text:
 ![map options](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/map_types_option.jpg)
 
-
 Now that we have the connection to Google Maps, the data, and the maps set up, we can plot the sampled trees. To start, let's simply plot a dot for each tree:
-```
+```r
 (initial_simple_map <- ggmap(edi_map_satellite) +
     geom_point(data = leaves, aes(x = long, y = lat, color = type, shape = type), 
                size = 3))
 ```
-![initial map](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/initial_map1.jpg)
+![initial map](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/rbge_initial_map.jpg)
 
 We can make this map more informative by adding the species names to each dot as a label:
-```
+```r
 (map_with_names <- ggmap(edi_map_satellite) +
     geom_point(data = leaves, aes(x = long, y = lat, color = type, shape = type), 
                size = 3) +
@@ -135,7 +134,7 @@ We can make this map more informative by adding the species names to each dot as
 ![labelled](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/rbge_map_with_names.jpg)
 
 You can now see a much more informative plot that tells you the exact location of each tree and the species, however, it looks a bit cluttered. For the purposes of this tutorial, we can plot the species abbreviation code instead of the full Latin names to make the map a bit less cluttered with text (however, this would not really be usable in formal academic reports without a legend explaining each abbreviation). Still, we can see it looks much cleaner (and comparing it with the top map, you can distinguish what each abbreviation means):
-```
+```r
 (map_with_codes <- ggmap(edi_map_satellite) +
     geom_point(data = leaves, aes(x = long, y = lat, color = type, shape = type), 
                size = 3) +
