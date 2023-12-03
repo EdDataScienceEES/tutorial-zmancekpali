@@ -1,4 +1,11 @@
 ---
+title: "Tutorial"
+date: "3/12/2023"
+output: 
+  pdf_document: 
+---
+
+
 ![Image credit: Google Maps](https://cdn.arstechnica.net/wp-content/uploads/2023/09/Google-Maps-640x361.jpg)
 
 
@@ -58,7 +65,6 @@ str(bugs)
 ```
 
 
-
 ---------
 ## Plotting locations of individual samples:
 
@@ -84,24 +90,24 @@ Now that we have a map of RBGE, we can select which type of map is best for our 
 edi_map_terrain <- get_map(rbge, maptype='terrain', source="google", zoom=16) #specify what kind of map you want
 (terrain_map <- ggmap(edi_map_terrain) +
     xlab("Longitude") +
-    ylab("Latitude\n") +
+    ylab("Latitude") +
     annotate("text", x = -3.214, y = 55.968, colour = "black", label = "a)", size = 4.5, 
              fontface = "bold"))
 
 edi_map_roadmap <- get_map(rbge, maptype='roadmap', source="google", zoom=16) 
 (roadmap <- ggmap(edi_map_roadmap) +
   xlab("Longitude") +
-  ylab("Latitude\n"))
+  ylab("Latitude"))
   
 edi_map_satellite <- get_map(rbge, maptype='satellite', source="google", zoom=16) 
 (satellite_map <- ggmap(edi_map_satellite) +
     xlab("Longitude") +
-    ylab("Latitude\n"))
+    ylab("Latitude"))
 
 edi_map_hybrid <- get_map(rbge, maptype='hybrid', source="google", zoom=16)
 (hybrid_map <- ggmap(edi_map_hybrid) +
     xlab("Longitude") +
-    ylab("Latitude\n"))
+    ylab("Latitude"))
 ```
 
 Here you can see them all side by side; for this study, I would most likely select satellite (bottom left) as it has the most realistic picture of the environment from which I collected my samples and is not cluttered with irrelevant text:

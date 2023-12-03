@@ -14,6 +14,7 @@ getwd() #check that it's worked
 library(ggmap)
 library(ggspatial)
 library(gridExtra)
+library(rmarkdown)
 library(tidyverse)
 
 #Set up the google maps connection
