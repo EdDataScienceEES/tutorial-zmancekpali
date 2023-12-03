@@ -51,7 +51,6 @@ To be able to work through this tutorial, we need to enable a connection between
 ```r
 ggmap::register_google(key = "your key here", write = TRUE) #register your own Google API Key here
 ```
-If you can't get your key to work for any reason, feel free to use mine to complete the tutorial (AIzaSyDnersipSvcXuK4tCDbr8NOpa-qsrYf9pc).
 
 To complete the setup, import the two datasets and familiarise yourself with the data: 
 ```r
