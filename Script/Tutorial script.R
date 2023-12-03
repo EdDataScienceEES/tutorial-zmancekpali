@@ -18,7 +18,7 @@ library(rmarkdown)
 library(tidyverse)
 
 #Set up the google maps connection
-ggmap::register_google(key = "AIzaSyDnersipSvcXuK4tCDbr8NOpa-qsrYf9pc", 
+ggmap::register_google(key = "your key here", 
                        write = TRUE) #register your own Google API Key here
 
 #Data
