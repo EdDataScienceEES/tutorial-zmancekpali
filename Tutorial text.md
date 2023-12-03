@@ -46,10 +46,15 @@ ggmap::register_google(key = "your key here", write = TRUE) #register your own G
 ```
 If you can't get your key to work for any reason, feel free to use mine to complete the tutorial (AIzaSyDnersipSvcXuK4tCDbr8NOpa-qsrYf9pc).
 
-To complete the setup, import the two datasets: 
+To complete the setup, import the two datasets and familiarise yourself with the data: 
 ```r
 leaves <- read.csv("Data/traits_analysis.csv")
+head(leaves)
+str(leaves)
+
 bugs <- read.csv("Data/bugs.csv")
+head(bugs)
+str(bugs)
 ```
 
 
