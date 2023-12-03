@@ -176,7 +176,7 @@ badaguish_sites <- c(left = -3.730, bottom = 57.174, right = -3.70, top = 57.20)
   scale_color_manual(values = c("#5EA8D9", "#CD6090", "#2CB82E", "#EEC900"), name = "Site")) 
 ```
 
-![transect figure](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/transect_simple.png)
+![transect figure](https://github.com/EdDataScienceEES/tutorial-zmancekpali/blob/master/Plots/transect_map.png)
 
 We can now see the exact location of each of our transects and the sampling points along them. However, you want your figures to be more detailed if you wanted to use them for a report, so let's instead plot a more detailed map for each site and make a grid of them (this way, we can see the exact habitat of our sampling sites). This next chunk of code filters out each of the four sites and plots them individually initially, and then arranges them in a grid using the ```grid.arrange()``` function. 
 
